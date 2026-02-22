@@ -1,0 +1,5 @@
+# Pre-commit
+.pre-commit-config.yaml.swp
+
+# OS
+.DS_Store
