@@ -130,16 +130,38 @@ TO UPDATE:
 
 ## Testing
 
+### Backend
+
+**Setup (one-time):**
+```bash
+cd backend
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+pip install -r requirements.txt
+pip install -e .  # Install package in editable mode
+```
+
+**Run tests:**
+```bash
+# Make sure you're in the backend directory with venv activated
+pytest
+
+# With verbose output
+pytest -v
+
+# With coverage
+pytest --cov=app
+```
+
+**Or run tests in Docker:**
+```bash
+docker-compose exec backend pytest
+```
+
 ### Frontend
 ```bash
 cd frontend
 npm run test
-```
-
-### Backend
-```bash
-cd backend
-pytest
 ```
 
 ## Code Formatting
@@ -182,6 +204,5 @@ MIT
 - [ ] Add user authentication (register/login)
 - [ ] Create task model and database schema
 - [ ] Add frontend task management UI
-- [ ] Implement user-specific task filtering
 - [ ] Add tests (frontend and backend)
 - [ ] Translate to .NET (use the provided guide)

@@ -3,6 +3,7 @@
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+  font-family: F37beckett, Tahoma, sans-serif;
 }
 
 .App-header {
@@ -11,12 +12,18 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  gap: 20px;
+  font-size: 16px;
+}
+
+.App-header h1 {
+  font-size: 48px;
+  font-weight: 400;
 }
 
 .status-card,
 .info-card {
-  background-color: #282c34;
+  background-color: #ffcf33;
   padding: 2rem;
   border-radius: 8px;
   margin: 1rem;
@@ -27,7 +34,7 @@
 .status-card h2,
 .info-card h3 {
   margin-top: 0;
-  color: #61dafb;
+  /* color: #61dafb; */
 }
 
 .success {
