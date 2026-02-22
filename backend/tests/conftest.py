@@ -12,7 +12,6 @@ from app.models.task import Task, TaskStatus
 @pytest.fixture(scope="function")
 def db_session():
     """Create a fresh database session for each test."""
-    # Create a new engine for each test
     engine = create_engine(
         "sqlite:///:memory:",
         connect_args={"check_same_thread": False},

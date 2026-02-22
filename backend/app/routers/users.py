@@ -9,7 +9,6 @@ router = APIRouter()
 
 @router.post("/users", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
 async def create_user(user: UserCreate, db: Session = Depends(get_db)):
-    """Create a new user."""
     db_user = user_service.create_user(db, user)
     db.commit()
     db.refresh(db_user)
@@ -18,7 +17,6 @@ async def create_user(user: UserCreate, db: Session = Depends(get_db)):
 
 @router.get("/users/{user_id}", response_model=UserResponse)
 async def get_user(user_id: int, db: Session = Depends(get_db)):
-    """Get a specific user by ID."""
     user = user_service.get_user_by_id(db, user_id)
     if not user:
         raise HTTPException(

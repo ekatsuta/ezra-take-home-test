@@ -4,10 +4,7 @@ from datetime import datetime, UTC
 
 
 class TestUserEndpoints:
-    """Test user API endpoints."""
-
     def test_create_user(self, client):
-        """Test creating a new user."""
         response = client.post(
             "/api/v1/users", json={"email": "newuser@example.com", "name": "New User"}
         )
@@ -19,14 +16,12 @@ class TestUserEndpoints:
         assert "created_at" in data
 
     def test_create_user_invalid_email(self, client):
-        """Test creating a user with invalid email."""
         response = client.post(
             "/api/v1/users", json={"email": "invalid-email", "name": "Test User"}
         )
         assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
     def test_get_user(self, client, sample_user):
-        """Test getting a user by ID."""
         response = client.get(f"/api/v1/users/{sample_user.id}")
         assert response.status_code == status.HTTP_200_OK
         data = response.json()
@@ -35,13 +30,11 @@ class TestUserEndpoints:
         assert data["name"] == sample_user.name
 
     def test_get_user_not_found(self, client):
-        """Test getting a non-existent user."""
         response = client.get("/api/v1/users/999")
         assert response.status_code == status.HTTP_404_NOT_FOUND
         assert response.json()["detail"] == "User not found"
 
     def test_get_deleted_user(self, client, sample_user, db_session):
-        """Test that soft-deleted users are not returned."""
         # Soft delete the user
         sample_user.deleted_at = datetime.now(UTC)
         db_session.commit()
