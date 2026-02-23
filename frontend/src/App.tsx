@@ -1,27 +1,30 @@
-import { useHealthCheck } from './hooks/useHealthCheck';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider } from './contexts/AuthContext';
+import { ProtectedRoute } from './components/ProtectedRoute';
+import { LoginPage } from './pages/LoginPage';
+import { RegisterPage } from './pages/RegisterPage';
+import { Dashboard } from './pages/Dashboard';
 import './App.css';
 
 function App() {
-  const { health, loading, error } = useHealthCheck();
-
   return (
-    <div className="App">
-      <header className="App-header">
-        <h1>Task Management App</h1>
-
-        <div className="status-card">
-          <h2>Backend Status</h2>
-          {loading && <p>Loading...</p>}
-          {error && <p className="error">Error: {error}</p>}
-          {health && (
-            <div>
-              <p className="success">Status: {health.status}</p>
-              <p>{health.message}</p>
-            </div>
-          )}
-        </div>
-      </header>
-    </div>
+    <BrowserRouter>
+      <AuthProvider>
+        <Routes>
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </AuthProvider>
+    </BrowserRouter>
   );
 }
 

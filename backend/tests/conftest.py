@@ -7,6 +7,7 @@ from app.database import Base, get_db
 from app.main import app
 from app.models.user import User
 from app.models.task import Task, TaskStatus
+from app.utils.security import hash_password, create_access_token
 
 
 @pytest.fixture(scope="function")
@@ -50,11 +51,22 @@ def client(db_session):
 @pytest.fixture
 def sample_user(db_session):
     """Create a sample user for testing."""
-    user = User(email="test@example.com", name="Test User")
+    user = User(
+        email="test@example.com",
+        name="Test User",
+        hashed_password=hash_password("testpassword123"),
+    )
     db_session.add(user)
     db_session.commit()
     db_session.refresh(user)
     return user
+
+
+@pytest.fixture
+def auth_headers(sample_user):
+    """Create authentication headers with a valid JWT token."""
+    access_token = create_access_token(data={"sub": sample_user.email})
+    return {"Authorization": f"Bearer {access_token}"}
 
 
 @pytest.fixture
