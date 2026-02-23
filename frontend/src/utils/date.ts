@@ -5,5 +5,9 @@ export const formatDate = (dateString: string | null): string | null => {
 
 export const formatDateForInput = (dateString: string | null): string => {
   if (!dateString) return '';
-  return new Date(dateString).toISOString().split('T')[0];
+  return new Date(dateString).toLocaleDateString('en-CA');
+};
+
+export const getTodayDate = (): string => {
+  return new Date().toLocaleDateString('en-CA');
 };

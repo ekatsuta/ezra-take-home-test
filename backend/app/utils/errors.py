@@ -1,4 +1,30 @@
-from fastapi import HTTPException, status
+from fastapi import HTTPException, Request, status
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
+
+
+async def validation_exception_handler(
+    request: Request,
+    exc: RequestValidationError,
+):
+    """Format validation errors into user-friendly messages."""
+    errors = exc.errors()
+    error_messages = []
+
+    for error in errors:
+        loc = error.get("loc", [])
+        field = ".".join(str(x) for x in loc if x != "body") or "field"
+        msg = error.get("msg", "Invalid value")
+
+        if "ctx" in error and "reason" in error["ctx"]:
+            error_messages.append(f"{field}: {error['ctx']['reason']}")
+        else:
+            error_messages.append(f"{field}: {msg}")
+
+    return JSONResponse(
+        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+        content={"detail": error_messages},
+    )
 
 
 # Authentication errors

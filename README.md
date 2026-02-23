@@ -17,28 +17,100 @@ Objective: Build a small to-do task management API and frontend.
 
 ## Project Structure
 
-TO UPDATE:
 ```
 .
-├── frontend/                 # React TypeScript application
+├── frontend/                      # React TypeScript application
 │   ├── src/
-│   │   ├── hooks/           # Custom React hooks
-│   │   ├── services/        # API service layer
-│   │   ├── App.tsx          # Main application component
-│   │   └── main.tsx         # Application entry point
+│   │   ├── components/            # React components (collocated structure)
+│   │   │   ├── forms/             # Auth form components
+│   │   │   │   ├── LoginForm/
+│   │   │   │   │   └── LoginForm.tsx
+│   │   │   │   └── RegisterForm/
+│   │   │   │       └── RegisterForm.tsx
+│   │   │   ├── tasks/             # Task management components
+│   │   │   │   ├── TaskBoard/     # Main container with state/logic
+│   │   │   │   │   ├── TaskBoard.tsx
+│   │   │   │   │   └── TaskBoard.module.css
+│   │   │   │   ├── TasksHeader/   # Task statistics header
+│   │   │   │   │   ├── TasksHeader.tsx
+│   │   │   │   │   └── TasksHeader.module.css
+│   │   │   │   ├── TaskForm/      # Create task form
+│   │   │   │   │   ├── TaskForm.tsx
+│   │   │   │   │   └── TaskForm.module.css
+│   │   │   │   ├── TaskFilterBar/ # Filter buttons
+│   │   │   │   │   ├── TaskFilterBar.tsx
+│   │   │   │   │   └── TaskFilterBar.module.css
+│   │   │   │   ├── TaskList/      # Task list presentation
+│   │   │   │   │   ├── TaskList.tsx
+│   │   │   │   │   └── TaskList.module.css
+│   │   │   │   ├── TaskCard/      # Task card container
+│   │   │   │   │   └── TaskCard.tsx
+│   │   │   │   ├── TaskItem/      # Task display component
+│   │   │   │   │   ├── TaskItem.tsx
+│   │   │   │   │   └── TaskItem.module.css
+│   │   │   │   └── TaskEditForm/  # Edit task form
+│   │   │   │       ├── TaskEditForm.tsx
+│   │   │   │       └── TaskEditForm.module.css
+│   │   │   └── ProtectedRoute/
+│   │   │       └── ProtectedRoute.tsx
+│   │   ├── pages/                 # Page components (collocated structure)
+│   │   │   ├── LoginPage/
+│   │   │   │   ├── LoginPage.tsx
+│   │   │   │   └── LoginPage.module.css
+│   │   │   ├── RegisterPage/
+│   │   │   │   ├── RegisterPage.tsx
+│   │   │   │   └── RegisterPage.module.css
+│   │   │   └── Dashboard/
+│   │   │       ├── Dashboard.tsx
+│   │   │       └── Dashboard.module.css
+│   │   ├── contexts/              # React contexts
+│   │   │   └── AuthContext.tsx
+│   │   ├── services/              # API service layer
+│   │   │   └── api.ts
+│   │   ├── styles/                # Shared styles
+│   │   │   └── forms.module.css
+│   │   ├── utils/                 # Utility functions
+│   │   │   ├── date.ts
+│   │   │   └── apiErrors.ts
+│   │   ├── types/                 # TypeScript types
+│   │   │   └── index.ts
+│   │   ├── test/                  # Test files
+│   │   │   └── auth.test.tsx
+│   │   ├── App.tsx                # Main application component
+│   │   ├── App.css
+│   │   ├── main.tsx               # Application entry point
+│   │   └── index.css
 │   ├── Dockerfile
 │   ├── package.json
-│   └── tsconfig.json
-├── backend/                  # FastAPI application
+│   ├── tsconfig.json
+│   └── vite.config.ts
+├── backend/                       # FastAPI application
 │   ├── app/
-│   │   ├── routers/         # API route handlers
-│   │   ├── config.py        # Configuration management
-│   │   └── main.py          # Application entry point
+│   │   ├── models/                # Database models
+│   │   │   ├── user.py
+│   │   │   └── task.py
+│   │   ├── routers/               # API route handlers
+│   │   │   ├── auth.py
+│   │   │   ├── tasks.py
+│   │   │   └── users.py
+│   │   ├── schemas/               # Pydantic schemas
+│   │   │   ├── user.py
+│   │   │   ├── task.py
+│   │   │   └── auth.py
+│   │   ├── services/              # Business logic layer
+│   │   │   ├── user_service.py
+│   │   │   └── task_service.py
+│   │   ├── utils/                 # Utility functions
+│   │   │   ├── auth.py
+│   │   │   └── database.py
+│   │   ├── config.py              # Configuration management
+│   │   └── main.py                # Application entry point
+│   ├── tests/                     # Test files
 │   ├── Dockerfile
 │   ├── requirements.txt
 │   └── .env
-├── docker-compose.yml        # Docker orchestration
-└── FASTAPI_TO_DOTNET_GUIDE.md  # Translation guide
+├── docker-compose.yml             # Docker orchestration
+└── FASTAPI_TO_DOTNET_GUIDE.md     # Translation guide
 ```
 
 ## Getting Started
@@ -200,6 +272,5 @@ MIT
 
 ## Next Steps
 
-- [ ] Add frontend task management UI
 - [ ] Add tests (frontend and backend)
 - [ ] Translate to .NET (use the provided guide)

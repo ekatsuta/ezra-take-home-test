@@ -1,4 +1,5 @@
 import { HealthResponse, Task, TaskCreate, TaskUpdate } from '../types';
+import { parseApiError } from '../utils/apiErrors';
 
 const API_BASE_URL = '/api/v1';
 
@@ -23,7 +24,8 @@ const apiRequest = async <T>(
   });
 
   if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
+    const errorMessage = await parseApiError(response);
+    throw new Error(errorMessage);
   }
 
   if (response.status === 204) {

@@ -1,0 +1,25 @@
+.header {
+  margin-bottom: 2rem;
+}
+
+.title {
+  margin: 0 0 1rem 0;
+  color: #333;
+  font-size: 32px;
+  font-weight: 700;
+}
+
+.stats {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.stat {
+  color: #666;
+  font-size: 14px;
+}
+
+.stat strong {
+  color: #333;
+  font-weight: 600;
+}
