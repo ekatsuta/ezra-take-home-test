@@ -200,8 +200,6 @@ MIT
 
 ## Next Steps
 
-- [ ] Add user authentication (register/login)
-- [ ] Create task model and database schema
 - [ ] Add frontend task management UI
 - [ ] Add tests (frontend and backend)
 - [ ] Translate to .NET (use the provided guide)

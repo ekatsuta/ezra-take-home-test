@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { FormEvent, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import styles from './RegisterForm.module.css';
 
@@ -6,7 +6,7 @@ interface RegisterFormProps {
   onSuccess?: () => void;
 }
 
-export const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess }) => {
+export default function RegisterForm({ onSuccess }: RegisterFormProps) {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
@@ -14,7 +14,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess }) => {
   const [loading, setLoading] = useState(false);
   const { register } = useAuth();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError('');
     setLoading(true);
@@ -81,4 +81,4 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess }) => {
       </button>
     </form>
   );
-};
+}

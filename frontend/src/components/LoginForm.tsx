@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { FormEvent, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import styles from './LoginForm.module.css';
 
@@ -6,14 +6,14 @@ interface LoginFormProps {
   onSuccess?: () => void;
 }
 
-export const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
+export default function LoginForm({ onSuccess }: LoginFormProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError('');
     setLoading(true);
@@ -65,4 +65,4 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
       </button>
     </form>
   );
-};
+}

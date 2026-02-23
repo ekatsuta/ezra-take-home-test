@@ -1,31 +1,24 @@
 import { useAuth } from '../contexts/AuthContext';
-import { useHealthCheck } from '../hooks/useHealthCheck';
+import TaskList from '../components/TaskList';
+import styles from './Dashboard.module.css';
 
-export const Dashboard = () => {
+export default function Dashboard() {
   const { user, logout } = useAuth();
-  const { health, loading, error } = useHealthCheck();
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <h1>Task Management App</h1>
-        <div>
-          <p>Welcome, {user?.name}!</p>
-          <button onClick={logout}>Logout</button>
-        </div>
-
-        <div className="status-card">
-          <h2>Backend Status</h2>
-          {loading && <p>Loading...</p>}
-          {error && <p className="error">Error: {error}</p>}
-          {health && (
-            <div>
-              <p className="success">Status: {health.status}</p>
-              <p>{health.message}</p>
-            </div>
-          )}
+    <div className={styles.dashboard}>
+      <header className={styles.header}>
+        <h1 className={styles.title}>Task Management</h1>
+        <div className={styles.userSection}>
+          <span className={styles.userName}>Welcome, {user?.name}!</span>
+          <button onClick={logout} className={styles.logoutButton}>
+            Logout
+          </button>
         </div>
       </header>
+      <main>
+        <TaskList />
+      </main>
     </div>
   );
-};
+}

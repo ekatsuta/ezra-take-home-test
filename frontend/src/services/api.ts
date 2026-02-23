@@ -33,6 +33,12 @@ const apiRequest = async <T>(
   return response.json();
 };
 
+const convertDateToISO = (dateString?: string): string | undefined => {
+  if (!dateString) return undefined;
+  // Convert YYYY-MM-DD to ISO datetime format
+  return `${dateString}T00:00:00`;
+};
+
 export const api = {
   checkHealth: () => apiRequest<HealthResponse>('/health'),
 
@@ -43,13 +49,19 @@ export const api = {
   createTask: (task: TaskCreate) =>
     apiRequest<Task>('/tasks', {
       method: 'POST',
-      body: JSON.stringify(task),
+      body: JSON.stringify({
+        ...task,
+        due_by: convertDateToISO(task.due_by),
+      }),
     }),
 
   updateTask: (id: number, task: TaskUpdate) =>
     apiRequest<Task>(`/tasks/${id}`, {
       method: 'PUT',
-      body: JSON.stringify(task),
+      body: JSON.stringify({
+        ...task,
+        due_by: task.due_by ? convertDateToISO(task.due_by) : undefined,
+      }),
     }),
 
   deleteTask: (id: number) =>

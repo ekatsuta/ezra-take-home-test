@@ -2,7 +2,6 @@ import { ReactElement } from 'react';
 import { render, RenderOptions } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { AuthProvider } from '../contexts/AuthContext';
-import { vi } from 'vitest';
 
 // Mock localStorage
 export const createLocalStorageMock = () => {

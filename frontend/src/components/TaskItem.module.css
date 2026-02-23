@@ -1,0 +1,195 @@
+.taskItem {
+  background-color: white;
+  padding: 1.25rem;
+  border-radius: 8px;
+  margin-bottom: 0.75rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  transition:
+    box-shadow 0.3s ease,
+    transform 0.2s ease;
+}
+
+.taskItem.editMode {
+  border: 2px solid #ffcf33;
+  box-shadow: 0 4px 12px rgba(255, 207, 51, 0.3);
+}
+
+.taskItem:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+.taskItem.completed {
+  opacity: 0.7;
+}
+
+.taskItem.completed .title {
+  text-decoration: line-through;
+  color: #888;
+}
+
+.taskContent {
+  flex: 1;
+}
+
+.taskHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.checkbox {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: #ffcf33;
+}
+
+.checkbox:disabled {
+  cursor: not-allowed;
+}
+
+.title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+
+.description {
+  margin: 0.5rem 0 0.75rem 2.25rem;
+  color: #666;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.taskMeta {
+  display: flex;
+  gap: 1rem;
+  margin-left: 2.25rem;
+  font-size: 12px;
+  color: #999;
+}
+
+.dueDate {
+  font-weight: 500;
+  color: #666;
+}
+
+.createdDate {
+  color: #999;
+}
+
+.taskActions {
+  display: flex;
+  gap: 0.5rem;
+  margin-left: 1rem;
+}
+
+.editButton,
+.deleteButton {
+  padding: 0.5rem 1rem;
+  background-color: #fff;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background-color 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.editButton {
+  color: #1976d2;
+  border: 1px solid #bbdefb;
+}
+
+.editButton:hover:not(:disabled) {
+  background-color: #e3f2fd;
+  border-color: #90caf9;
+}
+
+.deleteButton {
+  color: #d32f2f;
+  border: 1px solid #ffcdd2;
+}
+
+.deleteButton:hover:not(:disabled) {
+  background-color: #ffebee;
+  border-color: #ef9a9a;
+}
+
+.editButton:disabled,
+.deleteButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.editInput,
+.editTextarea,
+.editDateInput {
+  width: 100%;
+  padding: 0.75rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 14px;
+  margin-bottom: 0.75rem;
+  font-family: inherit;
+  transition: border-color 0.3s ease;
+  box-sizing: border-box;
+}
+
+.editInput:focus,
+.editTextarea:focus,
+.editDateInput:focus {
+  outline: none;
+  border-color: #ffcf33;
+}
+
+.editTextarea {
+  resize: vertical;
+  min-height: 60px;
+}
+
+.saveButton,
+.cancelButton {
+  padding: 0.5rem 1rem;
+  background-color: #fff;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background-color 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.saveButton {
+  color: #2e7d32;
+  border: 1px solid #c8e6c9;
+}
+
+.saveButton:hover:not(:disabled) {
+  background-color: #e8f5e9;
+  border-color: #81c784;
+}
+
+.cancelButton {
+  color: #666;
+  border: 1px solid #e0e0e0;
+}
+
+.cancelButton:hover:not(:disabled) {
+  background-color: #f5f5f5;
+  border-color: #999;
+}
+
+.saveButton:disabled,
+.cancelButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
