@@ -1,4 +1,4 @@
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 from typing import List
 
 
@@ -18,13 +18,11 @@ class Settings(BaseSettings):
     # Database
     database_url: str = "sqlite:///./app.db"
 
+    model_config = SettingsConfigDict(env_file=".env", case_sensitive=False)
+
     @property
     def cors_origins_list(self) -> List[str]:
         return [origin.strip() for origin in self.cors_origins.split(",")]
-
-    class Config:
-        env_file = ".env"
-        case_sensitive = False
 
 
 settings = Settings()
