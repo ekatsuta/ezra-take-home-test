@@ -1,14 +1,12 @@
 import { useState } from 'react';
 import { Task, TaskUpdate } from '../../../types';
+import { TASK_STATUS, TaskStatus } from '../../../constants/taskStatus';
 import TaskItem from '../TaskItem/TaskItem';
 import TaskEditForm from '../TaskEditForm/TaskEditForm';
 
 interface TaskCardProps {
   task: Task;
-  onToggleStatus: (
-    id: number,
-    status: 'pending' | 'completed'
-  ) => Promise<void>;
+  onToggleStatus: (id: number, status: TaskStatus) => Promise<void>;
   onDelete: (id: number) => Promise<void>;
   onUpdate: (id: number, updates: TaskUpdate) => Promise<void>;
 }
@@ -25,7 +23,10 @@ export default function TaskCard({
   const handleToggle = async () => {
     setLoading(true);
     try {
-      const newStatus = task.status === 'pending' ? 'completed' : 'pending';
+      const newStatus =
+        task.status === TASK_STATUS.PENDING
+          ? TASK_STATUS.COMPLETED
+          : TASK_STATUS.PENDING;
       await onToggleStatus(task.id, newStatus);
     } finally {
       setLoading(false);

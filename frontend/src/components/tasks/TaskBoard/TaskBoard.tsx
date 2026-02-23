@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Task, TaskCreate, TaskUpdate } from '../../../types';
 import { api } from '../../../services/api';
+import { TaskFilter } from '../../../constants/taskFilters';
+import { TASK_STATUS, TaskStatus } from '../../../constants/taskStatus';
 import TasksHeader from '../TasksHeader/TasksHeader';
 import TaskForm from '../TaskForm/TaskForm';
 import TaskFilterBar from '../TaskFilterBar/TaskFilterBar';
 import TaskList from '../TaskList/TaskList';
 import styles from './TaskBoard.module.css';
-
-type TaskFilter = 'all' | 'pending' | 'completed';
 
 export default function TaskBoard() {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -37,10 +37,7 @@ export default function TaskBoard() {
     setTasks(prev => [newTask, ...prev]);
   };
 
-  const handleToggleStatus = async (
-    id: number,
-    status: 'pending' | 'completed'
-  ) => {
+  const handleToggleStatus = async (id: number, status: TaskStatus) => {
     const updatedTask = await api.updateTask(id, { status });
     setTasks(prev => prev.map(task => (task.id === id ? updatedTask : task)));
   };
@@ -57,9 +54,11 @@ export default function TaskBoard() {
 
   // Calculate statistics
   const totalTasks = tasks.length;
-  const pendingTasks = tasks.filter(task => task.status === 'pending').length;
+  const pendingTasks = tasks.filter(
+    task => task.status === TASK_STATUS.PENDING
+  ).length;
   const completedTasks = tasks.filter(
-    task => task.status === 'completed'
+    task => task.status === TASK_STATUS.COMPLETED
   ).length;
 
   // Filter tasks based on active filter

@@ -11,19 +11,21 @@ export default function TasksHeader({
   pending,
   completed,
 }: TasksHeaderProps) {
+  const stats = [
+    { label: 'Total', value: total },
+    { label: 'Pending', value: pending },
+    { label: 'Completed', value: completed },
+  ];
+
   return (
     <div className={styles.header}>
       <h2 className={styles.title}>My Tasks</h2>
       <div className={styles.stats}>
-        <span className={styles.stat}>
-          Total: <strong>{total}</strong>
-        </span>
-        <span className={styles.stat}>
-          Pending: <strong>{pending}</strong>
-        </span>
-        <span className={styles.stat}>
-          Completed: <strong>{completed}</strong>
-        </span>
+        {stats.map(stat => (
+          <span key={stat.label} className={styles.stat}>
+            {stat.label}: <strong>{stat.value}</strong>
+          </span>
+        ))}
       </div>
     </div>
   );

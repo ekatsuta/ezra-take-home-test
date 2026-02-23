@@ -17,7 +17,6 @@ def test_validation_error_invalid_email(client: TestClient):
     assert response.status_code == 422
     data = response.json()
 
-    # Should return detail as an array
     assert "detail" in data
     assert isinstance(data["detail"], list)
     assert len(data["detail"]) > 0
@@ -43,7 +42,6 @@ def test_validation_error_missing_field(client: TestClient):
     assert response.status_code == 422
     data = response.json()
 
-    # Should return detail as an array with 2 errors
     assert "detail" in data
     assert isinstance(data["detail"], list)
     assert len(data["detail"]) == 2
@@ -63,7 +61,6 @@ def test_validation_error_short_password(client: TestClient):
     assert response.status_code == 422
     data = response.json()
 
-    # Should return detail as an array
     assert "detail" in data
     assert isinstance(data["detail"], list)
     assert len(data["detail"]) == 1

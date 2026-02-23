@@ -1,14 +1,13 @@
 import { Task, TaskUpdate } from '../../../types';
+import { TaskFilter } from '../../../constants/taskFilters';
+import { TaskStatus } from '../../../constants/taskStatus';
 import TaskCard from '../TaskCard/TaskCard';
 import styles from './TaskList.module.css';
 
 interface TaskListProps {
   tasks: Task[];
-  filter: 'all' | 'pending' | 'completed';
-  onToggleStatus: (
-    id: number,
-    status: 'pending' | 'completed'
-  ) => Promise<void>;
+  filter: TaskFilter;
+  onToggleStatus: (id: number, status: TaskStatus) => Promise<void>;
   onDelete: (id: number) => Promise<void>;
   onUpdate: (id: number, updates: TaskUpdate) => Promise<void>;
 }

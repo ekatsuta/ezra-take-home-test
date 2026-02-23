@@ -1,6 +1,7 @@
 import { useState, FormEvent } from 'react';
 import { TaskCreate } from '../../../types';
 import { getTodayDate } from '../../../utils/date';
+import { TextInput, Textarea, DateInput } from '../../forms/shared';
 import styles from './TaskForm.module.css';
 
 interface TaskFormProps {
@@ -39,10 +40,9 @@ export default function TaskForm({ onSubmit }: TaskFormProps) {
     <form onSubmit={handleSubmit} className={styles.form}>
       {error && <div className={styles.error}>{error}</div>}
       <div className={styles.formGroup}>
-        <input
-          type="text"
+        <TextInput
           value={title}
-          onChange={e => setTitle(e.target.value)}
+          onChange={setTitle}
           placeholder="Task title"
           required
           disabled={loading}
@@ -50,9 +50,9 @@ export default function TaskForm({ onSubmit }: TaskFormProps) {
         />
       </div>
       <div className={styles.formGroup}>
-        <textarea
+        <Textarea
           value={description}
-          onChange={e => setDescription(e.target.value)}
+          onChange={setDescription}
           placeholder="Description (optional)"
           disabled={loading}
           className={styles.textarea}
@@ -60,16 +60,14 @@ export default function TaskForm({ onSubmit }: TaskFormProps) {
         />
       </div>
       <div className={styles.formGroup}>
-        <label htmlFor="dueBy" className={styles.label}>
-          Due Date (optional)
-        </label>
-        <input
+        <DateInput
           id="dueBy"
-          type="date"
           value={dueBy}
-          onChange={e => setDueBy(e.target.value)}
+          onChange={setDueBy}
+          label="Due Date (optional)"
           disabled={loading}
-          className={styles.dateInput}
+          inputClassName={styles.dateInput}
+          labelClassName={styles.label}
           min={getTodayDate()}
         />
       </div>

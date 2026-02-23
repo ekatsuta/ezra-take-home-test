@@ -1,6 +1,9 @@
+import {
+  TaskFilter,
+  TASK_FILTERS,
+  TASK_FILTER_LABELS,
+} from '../../../constants/taskFilters';
 import styles from './TaskFilterBar.module.css';
-
-type TaskFilter = 'all' | 'pending' | 'completed';
 
 interface TaskFilterBarProps {
   activeFilter: TaskFilter;
@@ -13,30 +16,17 @@ export default function TaskFilterBar({
 }: TaskFilterBarProps) {
   return (
     <div className={styles.filters}>
-      <button
-        className={`${styles.filterButton} ${
-          activeFilter === 'all' ? styles.active : ''
-        }`}
-        onClick={() => onFilterChange('all')}
-      >
-        All
-      </button>
-      <button
-        className={`${styles.filterButton} ${
-          activeFilter === 'pending' ? styles.active : ''
-        }`}
-        onClick={() => onFilterChange('pending')}
-      >
-        Pending
-      </button>
-      <button
-        className={`${styles.filterButton} ${
-          activeFilter === 'completed' ? styles.active : ''
-        }`}
-        onClick={() => onFilterChange('completed')}
-      >
-        Completed
-      </button>
+      {TASK_FILTERS.map(filter => (
+        <button
+          key={filter}
+          className={`${styles.filterButton} ${
+            activeFilter === filter ? styles.active : ''
+          }`}
+          onClick={() => onFilterChange(filter)}
+        >
+          {TASK_FILTER_LABELS[filter]}
+        </button>
+      ))}
     </div>
   );
 }

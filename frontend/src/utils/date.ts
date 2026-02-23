@@ -11,3 +11,9 @@ export const formatDateForInput = (dateString: string | null): string => {
 export const getTodayDate = (): string => {
   return new Date().toLocaleDateString('en-CA');
 };
+
+export const convertDateToISO = (dateString?: string): string | undefined => {
+  if (!dateString) return undefined;
+  // Convert YYYY-MM-DD to ISO datetime format
+  return `${dateString}T00:00:00`;
+};

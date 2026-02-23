@@ -1,5 +1,6 @@
 import { HealthResponse, Task, TaskCreate, TaskUpdate } from '../types';
 import { parseApiError } from '../utils/apiErrors';
+import { convertDateToISO } from '../utils/date';
 
 const API_BASE_URL = '/api/v1';
 
@@ -33,12 +34,6 @@ const apiRequest = async <T>(
   }
 
   return response.json();
-};
-
-const convertDateToISO = (dateString?: string): string | undefined => {
-  if (!dateString) return undefined;
-  // Convert YYYY-MM-DD to ISO datetime format
-  return `${dateString}T00:00:00`;
 };
 
 export const api = {

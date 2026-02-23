@@ -1,4 +1,5 @@
 import { Task } from '../../../types';
+import { TASK_STATUS } from '../../../constants/taskStatus';
 import { formatDate } from '../../../utils/date';
 import styles from './TaskItem.module.css';
 
@@ -20,14 +21,14 @@ export default function TaskItem({
   return (
     <div
       className={`${styles.taskItem} ${
-        task.status === 'completed' && styles.completed
+        task.status === TASK_STATUS.COMPLETED && styles.completed
       }`}
     >
       <div className={styles.taskContent}>
         <div className={styles.taskHeader}>
           <input
             type="checkbox"
-            checked={task.status === 'completed'}
+            checked={task.status === TASK_STATUS.COMPLETED}
             onChange={onToggleStatus}
             disabled={loading}
             className={styles.checkbox}

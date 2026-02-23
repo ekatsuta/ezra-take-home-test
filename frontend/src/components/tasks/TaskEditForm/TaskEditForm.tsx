@@ -1,6 +1,7 @@
 import { useState, FormEvent } from 'react';
 import { Task, TaskUpdate } from '../../../types';
 import { formatDateForInput, getTodayDate } from '../../../utils/date';
+import { TextInput, Textarea, DateInput } from '../../forms/shared';
 import styles from './TaskEditForm.module.css';
 
 interface TaskEditFormProps {
@@ -37,33 +38,30 @@ export default function TaskEditForm({
       className={`${styles.form} ${styles.editMode}`}
     >
       <div className={styles.formContent}>
-        <input
-          type="text"
+        <TextInput
           value={editTitle}
-          onChange={e => setEditTitle(e.target.value)}
+          onChange={setEditTitle}
+          placeholder="Task title"
           required
           disabled={loading}
           className={styles.input}
-          placeholder="Task title"
         />
-        <textarea
+        <Textarea
           value={editDescription}
-          onChange={e => setEditDescription(e.target.value)}
+          onChange={setEditDescription}
+          placeholder="Description (optional)"
           disabled={loading}
           className={styles.textarea}
-          placeholder="Description (optional)"
           rows={2}
         />
-        <label htmlFor={`editDueBy-${task.id}`} className={styles.label}>
-          Due Date (optional)
-        </label>
-        <input
+        <DateInput
           id={`editDueBy-${task.id}`}
-          type="date"
           value={editDueBy}
-          onChange={e => setEditDueBy(e.target.value)}
+          onChange={setEditDueBy}
+          label="Due Date (optional)"
           disabled={loading}
-          className={styles.dateInput}
+          inputClassName={styles.dateInput}
+          labelClassName={styles.label}
           min={getTodayDate()}
         />
       </div>
