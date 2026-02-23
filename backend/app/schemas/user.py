@@ -10,12 +10,6 @@ class UserBase(BaseModel):
     name: str
 
 
-class UserCreate(UserBase):
-    """Schema for creating a new user (admin use)."""
-
-    pass
-
-
 class UserRegister(UserBase):
     """Schema for user registration."""
 

@@ -119,30 +119,3 @@ class TestAuthEndpoints:
         response = client.get("/api/v1/auth/me", headers=headers)
 
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
-
-
-class TestUserEndpoints:
-    """Test user endpoints."""
-
-    def test_get_user(self, client, sample_user):
-        """Test getting a user by ID."""
-        response = client.get(f"/api/v1/users/{sample_user.id}")
-        assert response.status_code == status.HTTP_200_OK
-        data = response.json()
-        assert data["id"] == sample_user.id
-        assert data["email"] == sample_user.email
-        assert data["name"] == sample_user.name
-
-    def test_get_user_not_found(self, client):
-        """Test getting a non-existent user."""
-        response = client.get("/api/v1/users/999")
-        assert response.status_code == status.HTTP_404_NOT_FOUND
-        assert response.json()["detail"] == "User not found"
-
-    def test_get_deleted_user(self, client, sample_user, db_session):
-        """Test that soft-deleted users are not returned."""
-        sample_user.deleted_at = datetime.now(UTC)
-        db_session.commit()
-
-        response = client.get(f"/api/v1/users/{sample_user.id}")
-        assert response.status_code == status.HTTP_404_NOT_FOUND

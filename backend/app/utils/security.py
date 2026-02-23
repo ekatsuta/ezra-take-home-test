@@ -1,11 +1,20 @@
 from datetime import datetime, timedelta, UTC
 from typing import Optional
+import os
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 from app.config import settings
 
-# Password hashing context
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+# Password hashing context - use fewer rounds during testing for speed
+# Default: 12 rounds (secure but slow), Testing: 4 rounds (fast)
+_is_testing = os.getenv("TESTING") == "1" or "pytest" in os.path.basename(
+    os.getenv("_", "")
+)
+pwd_context = CryptContext(
+    schemes=["bcrypt"],
+    deprecated="auto",
+    bcrypt__rounds=4 if _is_testing else 12,
+)
 
 
 def hash_password(password: str) -> str:
