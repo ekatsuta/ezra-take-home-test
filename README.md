@@ -200,7 +200,6 @@ MIT
 
 ## Next Steps
 
-- [ ] Implement task CRUD endpoints
 - [ ] Add user authentication (register/login)
 - [ ] Create task model and database schema
 - [ ] Add frontend task management UI
