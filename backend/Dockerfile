@@ -1,16 +1,25 @@
-FROM python:3.11-slim
-
+# Build stage
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /app
 
-# Install dependencies
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# Copy csproj and restore dependencies
+COPY TaskManagement.Api/*.csproj ./
+RUN dotnet restore
 
-# Copy application code
-COPY . .
+# Copy everything else and publish
+COPY TaskManagement.Api/ ./
+RUN dotnet publish -c Release -o out
 
-# Expose port
+# Runtime stage
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
+WORKDIR /app
 EXPOSE 8000
 
-# Run the application
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+# Copy published app
+COPY --from=build /app/out .
+
+# Set environment variables
+ENV ASPNETCORE_URLS=http://+:8000
+ENV ASPNETCORE_ENVIRONMENT=Development
+
+ENTRYPOINT ["dotnet", "TaskManagement.Api.dll"]

@@ -1,15 +1,16 @@
 services:
-  backend-dotnet:
-    build: ./backend-dotnet
-    container_name: task-api-backend-dotnet
+  backend:
+    build: ./backend
+    container_name: task-api-backend
     ports:
       - "8000:8000"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:8000
-      - JWT__SecretKey=your-secret-key-min-32-characters-long-change-in-production
-      - ConnectionStrings__DefaultConnection=Data Source=/app/app.db
-      - CORS__AllowedOrigins__0=http://localhost:3000
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - ASPNETCORE_URLS=${ASPNETCORE_URLS}
+      - JWT__SecretKey=${JWT__SecretKey}
+      - ConnectionStrings__DefaultConnection=${ConnectionStrings__DefaultConnection}
+      - CORS__AllowedOrigins__0=${CORS__AllowedOrigins__0}
+      - CORS__AllowedOrigins__1=${CORS__AllowedOrigins__1}
     networks:
       - app-network
 
@@ -22,7 +23,7 @@ services:
       - ./frontend:/app
       - /app/node_modules
     depends_on:
-      - backend-dotnet
+      - backend
     networks:
       - app-network
 

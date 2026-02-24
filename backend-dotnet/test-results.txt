@@ -1,3 +1,0 @@
-  Determining projects to restore...
-/src/TaskManagement.Api/TaskManagement.Api.csproj : warning NU1902: Package 'System.IdentityModel.Tokens.Jwt' 7.0.3 has a known moderate severity vulnerability, https://github.com/advisories/GHSA-59j7-ghrg-fj52 [/src/TaskManagement.sln]
-  Restored /src/TaskManagement.Api/TaskManagement.Api.csproj (in 9.74 sec).

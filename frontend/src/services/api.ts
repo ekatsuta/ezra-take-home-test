@@ -79,16 +79,30 @@ export const api = {
       }),
     }).then(mapApiTaskToTask),
 
-  updateTask: (id: number, task: TaskUpdate) =>
-    apiRequest<ApiTask>(`/tasks/${id}`, {
+  updateTask: (id: number, task: TaskUpdate) => {
+    // `due_by` and `description` support explicit clearing.
+    // If caller includes a key with null/undefined, send corresponding clear flag.
+    // If caller omits a key entirely, preserve existing server value.
+    const hasDueBy = Object.prototype.hasOwnProperty.call(task, 'due_by');
+    const dueByCleared = hasDueBy && !task.due_by;
+    const hasDescription = Object.prototype.hasOwnProperty.call(
+      task,
+      'description'
+    );
+    const descriptionCleared = hasDescription && task.description == null;
+
+    return apiRequest<ApiTask>(`/tasks/${id}`, {
       method: 'PUT',
       body: JSON.stringify({
         title: task.title,
         description: task.description,
         status: task.status,
         dueBy: task.due_by ? convertDateToISO(task.due_by) : undefined,
+        clearDueBy: dueByCleared || undefined,
+        clearDescription: descriptionCleared || undefined,
       }),
-    }).then(mapApiTaskToTask),
+    }).then(mapApiTaskToTask);
+  },
 
   deleteTask: (id: number) =>
     apiRequest<void>(`/tasks/${id}`, {

@@ -61,7 +61,9 @@ public class TaskService : ITaskService
         if (taskDto.Title != null)
             task.Title = taskDto.Title;
 
-        if (taskDto.Description != null)
+        if (taskDto.ClearDescription)
+            task.Description = null;
+        else if (taskDto.Description != null)
             task.Description = taskDto.Description;
 
         if (taskDto.Status.HasValue)

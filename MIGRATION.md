@@ -1,8 +1,8 @@
-# FastAPI to .NET Core Migration Documentation (Historical document - FastAPI backend has been removed)
+# FastAPI to .NET Migration Documentation (Historical document - FastAPI backend has been removed)
 
 ## Summary
 
-This document outlines the complete migration of the Task Management API from FastAPI (Python) to .NET Core 8.0 (C#), preserving all functionality while leveraging .NET's enterprise-grade features and type safety. I initially built the API in FastAPI, as it's the Python framework I'm most familiar with and allowed me to move quickly on the core logic. I then used Claude Code to assist with migrating the implementation to .NET, ensuring the translation was accurate and idiomatic to C#/.NET conventions.
+This document outlines the complete migration of the Task Management API from FastAPI (Python) to .NET 8.0 (C#), preserving all functionality while leveraging .NET's enterprise-grade features and type safety. I initially built the API in FastAPI, as it's the Python framework I'm most familiar with and allowed me to move quickly on the core logic. I then used Claude Code to assist with migrating the implementation to .NET, ensuring the translation was accurate and idiomatic to C#/.NET conventions.
 
 ## Table of Contents
 
@@ -35,10 +35,10 @@ backend/
 │   └── utils/               # Utilities (security, errors)
 ```
 
-### .NET Core Architecture (Migrated)
+### .NET Architecture (Migrated)
 
 ```
-backend-dotnet/
+backend/
 └── TaskManagement.Api/
     ├── Program.cs           # Application entry point & DI setup
     ├── appsettings.json     # Configuration
@@ -63,7 +63,7 @@ backend-dotnet/
 
 ### Database & ORM
 
-| Component | FastAPI | .NET Core |
+| Component | FastAPI | .NET |
 |-----------|---------|-----------|
 | **ORM** | SQLAlchemy 2.0 | Entity Framework Core 8.0 |
 | **Database** | SQLite 3 | SQLite 3 |
@@ -73,7 +73,7 @@ backend-dotnet/
 
 ### Authentication & Security
 
-| Component | FastAPI | .NET Core |
+| Component | FastAPI | .NET |
 |-----------|---------|-----------|
 | **JWT Library** | python-jose | System.IdentityModel.Tokens.Jwt |
 | **Password Hashing** | passlib + bcrypt | BCrypt.Net |
@@ -82,7 +82,7 @@ backend-dotnet/
 
 ### Validation & Serialization
 
-| Component | FastAPI | .NET Core |
+| Component | FastAPI | .NET |
 |-----------|---------|-----------|
 | **Request Validation** | Pydantic v2 | Data Annotations + Model Binding |
 | **Response Serialization** | Pydantic models | System.Text.Json |
@@ -91,7 +91,7 @@ backend-dotnet/
 
 ### Testing
 
-| Component | FastAPI | .NET Core |
+| Component | FastAPI | .NET |
 |-----------|---------|-----------|
 | **Test Framework** | pytest 7.4+ | xUnit 2.6 |
 | **Test Client** | TestClient (Starlette) | WebApplicationFactory |
@@ -151,10 +151,10 @@ class User(Base):
     tasks = relationship("Task", back_populates="creator")
 ```
 
-#### .NET Core (EF Core)
+#### .NET (EF Core)
 
 ```csharp
-// backend-dotnet/TaskManagement.Api/Models/User.cs
+// backend/TaskManagement.Api/Models/User.cs
 [Table("users")]
 public class User
 {
@@ -213,10 +213,10 @@ class UserResponse(BaseModel):
     created_at: datetime
 ```
 
-#### .NET Core (Records + Data Annotations)
+#### .NET (Records + Data Annotations)
 
 ```csharp
-// backend-dotnet/TaskManagement.Api/DTOs/UserDtos.cs
+// backend/TaskManagement.Api/DTOs/UserDtos.cs
 public record UserRegisterDto(
     [Required][EmailAddress] string Email,
     [Required] string Name,
@@ -265,7 +265,7 @@ hashed = pwd_context.hash(password)
 is_valid = pwd_context.verify(password, hashed)
 ```
 
-**.NET Core**:
+**.NET**:
 ```csharp
 string hashed = BCrypt.Net.BCrypt.HashPassword(password);
 bool isValid = BCrypt.Net.BCrypt.Verify(password, hashed);
@@ -290,10 +290,10 @@ app.add_middleware(
 )
 ```
 
-#### .NET Core
+#### .NET
 
 ```csharp
-// backend-dotnet/TaskManagement.Api/Program.cs
+// backend/TaskManagement.Api/Program.cs
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
@@ -316,13 +316,25 @@ Both backends return errors in the same format:
 }
 ```
 
+### Partial Update Semantics
+
+The current .NET implementation preserves partial-update behavior for nullable fields by using explicit clear flags:
+
+- `clearDueBy`: clear `due_by` when set to `true`
+- `clearDescription`: clear `description` when set to `true`
+
+This avoids ambiguity between:
+- omitted field (no change)
+- explicitly cleared field (set to `null`)
+
+
 ---
 
 ## Migration Details
 
 ### 1. Project Structure Translation
 
-| FastAPI Concept | .NET Core Equivalent | Notes |
+| FastAPI Concept | .NET Equivalent | Notes |
 |-----------------|---------------------|-------|
 | `main.py` | `Program.cs` | Application entry point |
 | Pydantic schemas | DTOs with Data Annotations | Request/response validation |
@@ -346,10 +358,10 @@ async def create_task(
     # ...
 ```
 
-#### .NET Core (Constructor-based)
+#### .NET (Constructor-based)
 
 ```csharp
-// backend-dotnet/TaskManagement.Api/Controllers/TasksController.cs
+// backend/TaskManagement.Api/Controllers/TasksController.cs
 [Authorize]
 [ApiController]
 [Route("api/v1/tasks")]
@@ -452,7 +464,7 @@ public class TestWebApplicationFactory<TProgram> : WebApplicationFactory<TProgra
 - **Cleanup**: `Base.metadata.drop_all()` after tests
 - **Dependencies**: Override via `app.dependency_overrides`
 
-#### .NET Core
+#### .NET
 - **Database**: Unique EF Core in-memory database per test class (GUID-based names)
 - **Cleanup**: `IAsyncLifetime.DisposeAsync()` clears data after each test
 - **Auth Headers**: Explicitly cleared between tests to prevent interference

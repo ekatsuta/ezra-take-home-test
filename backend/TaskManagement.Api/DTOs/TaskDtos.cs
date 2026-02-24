@@ -14,7 +14,8 @@ public record TaskUpdateDto(
     string? Description,
     TaskStatus? Status,
     DateTime? DueBy,
-    bool ClearDueBy = false
+    bool ClearDueBy = false,
+    bool ClearDescription = false
 );
 
 public record TaskResponseDto(
