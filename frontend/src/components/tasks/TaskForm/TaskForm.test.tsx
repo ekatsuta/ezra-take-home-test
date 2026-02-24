@@ -25,9 +25,15 @@ describe('TaskForm', () => {
     ).toBeInTheDocument();
   });
 
-  it('should submit form with title only', async () => {
+  it('should submit form with title only and handle loading state', async () => {
     const user = userEvent.setup();
-    const onSubmit = vi.fn().mockResolvedValue(undefined);
+    let resolveSubmit: () => void;
+    const onSubmit = vi.fn(
+      () =>
+        new Promise<void>(resolve => {
+          resolveSubmit = resolve;
+        })
+    );
 
     render(<TaskForm onSubmit={onSubmit} />);
 
@@ -37,7 +43,21 @@ describe('TaskForm', () => {
     const submitButton = screen.getByRole('button', { name: /add task/i });
     await user.click(submitButton);
 
+    // Button and inputs should be disabled while loading
     await waitFor(() => {
+      expect(submitButton).toBeDisabled();
+      expect(screen.getByText('Creating...')).toBeInTheDocument();
+      expect(titleInput).toBeDisabled();
+    });
+
+    // Resolve the promise
+    resolveSubmit!();
+
+    // Button and inputs should be enabled again, and submit called with correct data
+    await waitFor(() => {
+      expect(submitButton).not.toBeDisabled();
+      expect(screen.getByText('Add Task')).toBeInTheDocument();
+      expect(titleInput).not.toBeDisabled();
       expect(onSubmit).toHaveBeenCalledWith({
         title: 'New Task',
         description: undefined,

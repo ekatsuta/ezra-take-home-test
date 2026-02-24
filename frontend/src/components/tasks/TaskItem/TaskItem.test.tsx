@@ -35,7 +35,6 @@ describe('TaskItem', () => {
     expect(screen.getByText('Test Task')).toBeInTheDocument();
     expect(screen.getByText('Test Description')).toBeInTheDocument();
     expect(screen.getByText(/Due:/)).toBeInTheDocument();
-    expect(screen.getByText(/Created:/)).toBeInTheDocument();
   });
 
   it('should not render description if null', () => {

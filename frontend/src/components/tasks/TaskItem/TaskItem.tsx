@@ -45,9 +45,6 @@ export default function TaskItem({
               Due: {formatDate(task.due_by)}
             </span>
           )}
-          <span className={styles.createdDate}>
-            Created: {formatDate(task.created_at)}
-          </span>
         </div>
       </div>
       <div className={styles.taskActions}>
