@@ -29,40 +29,47 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className={styles.form}>
-      <h2 className={styles.title}>Login</h2>
-      {error && <div className={styles.error}>{error}</div>}
-      <div className={styles.formGroup}>
-        <label htmlFor="email" className={styles.label}>
-          Email
-        </label>
-        <input
-          id="email"
-          type="email"
-          value={email}
-          onChange={e => setEmail(e.target.value)}
-          required
-          disabled={loading}
-          className={styles.input}
-        />
-      </div>
-      <div className={styles.formGroup}>
-        <label htmlFor="password" className={styles.label}>
-          Password
-        </label>
-        <input
-          id="password"
-          type="password"
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-          required
-          disabled={loading}
-          className={styles.input}
-        />
-      </div>
-      <button type="submit" disabled={loading} className={styles.button}>
-        {loading ? 'Logging in...' : 'Login'}
-      </button>
-    </form>
+    <>
+      {loading && (
+        <div className={styles.loadingOverlay}>
+          <div className={styles.spinner}></div>
+        </div>
+      )}
+      <form onSubmit={handleSubmit} className={styles.form}>
+        <h2 className={styles.title}>Login</h2>
+        {error && <div className={styles.error}>{error}</div>}
+        <div className={styles.formGroup}>
+          <label htmlFor="email" className={styles.label}>
+            Email
+          </label>
+          <input
+            id="email"
+            type="email"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            required
+            disabled={loading}
+            className={styles.input}
+          />
+        </div>
+        <div className={styles.formGroup}>
+          <label htmlFor="password" className={styles.label}>
+            Password
+          </label>
+          <input
+            id="password"
+            type="password"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            required
+            disabled={loading}
+            className={styles.input}
+          />
+        </div>
+        <button type="submit" disabled={loading} className={styles.button}>
+          {loading ? 'Logging in...' : 'Login'}
+        </button>
+      </form>
+    </>
   );
 }

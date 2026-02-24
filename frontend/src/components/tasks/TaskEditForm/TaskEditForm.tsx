@@ -27,8 +27,8 @@ export default function TaskEditForm({
     e.preventDefault();
     await onSave({
       title: editTitle,
-      description: editDescription || undefined,
-      due_by: editDueBy || undefined,
+      description: editDescription || null,
+      due_by: editDueBy || null,
     });
   };
 

@@ -21,13 +21,13 @@ export interface Task {
 
 export interface TaskCreate {
   title: string;
-  description?: string;
+  description?: string | null;
   due_by?: string;
 }
 
 export interface TaskUpdate {
   title?: string;
-  description?: string;
+  description?: string | null;
   status?: TaskStatus;
-  due_by?: string;
+  due_by?: string | null;
 }

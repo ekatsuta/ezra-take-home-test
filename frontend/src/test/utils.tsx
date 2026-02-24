@@ -46,8 +46,8 @@ export const mockUserResponse = {
     id: 1,
     email: 'test@example.com',
     name: 'Test User',
-    created_at: '2024-01-01T00:00:00Z',
+    createdAt: '2024-01-01T00:00:00Z',
   },
-  access_token: 'mock-token',
-  token_type: 'bearer',
+  accessToken: 'mock-token',
+  tokenType: 'bearer',
 };

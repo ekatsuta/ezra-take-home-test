@@ -4,13 +4,13 @@ services:
     container_name: task-api-backend
     ports:
       - "8000:8000"
-    volumes:
-      - ./backend:/app
-    env_file:
-      - ./backend/.env
     environment:
-      - ENVIRONMENT=development
-      - DEBUG=True
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - ASPNETCORE_URLS=${ASPNETCORE_URLS}
+      - JWT__SecretKey=${JWT__SecretKey}
+      - ConnectionStrings__DefaultConnection=${ConnectionStrings__DefaultConnection}
+      - CORS__AllowedOrigins__0=${CORS__AllowedOrigins__0}
+      - CORS__AllowedOrigins__1=${CORS__AllowedOrigins__1}
     networks:
       - app-network
 

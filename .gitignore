@@ -3,3 +3,18 @@
 
 # OS
 .DS_Store
+
+# .NET
+backend/bin/
+backend/obj/
+backend/**/*.user
+backend/**/*.suo
+backend/**/*.userosscache
+backend/**/*.sln.docstates
+backend/.vs/
+
+# Env files
+.env
+.env.local
+backend/TaskManagement.Api/.env
+frontend/.env
