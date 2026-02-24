@@ -1,3 +1,5 @@
+import { TaskStatus } from '../constants';
+
 export interface User {
   id: number;
   email: string;
@@ -9,7 +11,7 @@ export interface Task {
   id: number;
   title: string;
   description: string | null;
-  status: 'pending' | 'completed';
+  status: TaskStatus;
   created_by: number;
   created_at: string;
   updated_at: string;
@@ -26,7 +28,7 @@ export interface TaskCreate {
 export interface TaskUpdate {
   title?: string;
   description?: string;
-  status?: 'pending' | 'completed';
+  status?: TaskStatus;
   due_by?: string;
 }
 

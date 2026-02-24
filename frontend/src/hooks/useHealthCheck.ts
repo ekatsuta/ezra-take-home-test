@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { api, HealthResponse } from '../services/api';
+import { api } from '../services/api';
+import { HealthResponse } from '../types';
 
 export const useHealthCheck = () => {
   const [health, setHealth] = useState<HealthResponse | null>(null);

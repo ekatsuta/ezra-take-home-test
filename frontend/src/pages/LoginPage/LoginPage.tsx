@@ -1,8 +1,8 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { LoginForm } from '../components/LoginForm';
+import LoginForm from '../../components/forms/LoginForm/LoginForm';
 import styles from './LoginPage.module.css';
 
-export const LoginPage = () => {
+export default function LoginPage() {
   const navigate = useNavigate();
 
   return (
@@ -13,4 +13,4 @@ export const LoginPage = () => {
       </p>
     </div>
   );
-};
+}

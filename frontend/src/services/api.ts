@@ -1,4 +1,6 @@
 import { HealthResponse, Task, TaskCreate, TaskUpdate } from '../types';
+import { parseApiError } from '../utils/apiErrors';
+import { convertDateToISO } from '../utils/date';
 
 const API_BASE_URL = '/api/v1';
 
@@ -23,7 +25,8 @@ const apiRequest = async <T>(
   });
 
   if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
+    const errorMessage = await parseApiError(response);
+    throw new Error(errorMessage);
   }
 
   if (response.status === 204) {
@@ -43,13 +46,19 @@ export const api = {
   createTask: (task: TaskCreate) =>
     apiRequest<Task>('/tasks', {
       method: 'POST',
-      body: JSON.stringify(task),
+      body: JSON.stringify({
+        ...task,
+        due_by: convertDateToISO(task.due_by),
+      }),
     }),
 
   updateTask: (id: number, task: TaskUpdate) =>
     apiRequest<Task>(`/tasks/${id}`, {
       method: 'PUT',
-      body: JSON.stringify(task),
+      body: JSON.stringify({
+        ...task,
+        due_by: task.due_by ? convertDateToISO(task.due_by) : undefined,
+      }),
     }),
 
   deleteTask: (id: number) =>

@@ -1,0 +1,112 @@
+.form {
+  background-color: white;
+  padding: 1.25rem;
+  border-radius: 8px;
+  margin-bottom: 0.75rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.form.editMode {
+  border: 2px solid #ffcf33;
+  box-shadow: 0 4px 12px rgba(255, 207, 51, 0.3);
+}
+
+.formContent {
+  margin-bottom: 1rem;
+}
+
+.input,
+.textarea,
+.dateInput {
+  width: 100%;
+  padding: 0.75rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 14px;
+  margin-bottom: 0.75rem;
+  font-family: inherit;
+  transition: border-color 0.3s ease;
+  box-sizing: border-box;
+}
+
+.input:focus,
+.textarea:focus,
+.dateInput:focus {
+  outline: none;
+  border-color: #ffcf33;
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 60px;
+}
+
+.label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #555;
+  font-weight: 500;
+  font-size: 13px;
+}
+
+.dateInput {
+  cursor: pointer;
+  position: relative;
+}
+
+.dateInput::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: auto;
+  height: auto;
+  color: transparent;
+  background: transparent;
+}
+
+.formActions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.saveButton,
+.cancelButton {
+  padding: 0.5rem 1rem;
+  background-color: #fff;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background-color 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.saveButton {
+  color: #2e7d32;
+  border: 1px solid #c8e6c9;
+}
+
+.saveButton:hover:not(:disabled) {
+  background-color: #e8f5e9;
+  border-color: #81c784;
+}
+
+.cancelButton {
+  color: #666;
+  border: 1px solid #e0e0e0;
+}
+
+.cancelButton:hover:not(:disabled) {
+  background-color: #f5f5f5;
+  border-color: #999;
+}
+
+.saveButton:disabled,
+.cancelButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

@@ -1,0 +1,125 @@
+.taskItem {
+  background-color: white;
+  padding: 1.25rem;
+  border-radius: 8px;
+  margin-bottom: 0.75rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  transition:
+    box-shadow 0.3s ease,
+    transform 0.2s ease;
+}
+
+.taskItem:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+.taskItem.completed {
+  opacity: 0.7;
+}
+
+.taskItem.completed .title {
+  text-decoration: line-through;
+  color: #888;
+}
+
+.taskContent {
+  flex: 1;
+}
+
+.taskHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.checkbox {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: #ffcf33;
+}
+
+.checkbox:disabled {
+  cursor: not-allowed;
+}
+
+.title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+
+.description {
+  margin: 0.5rem 0 0.75rem 2.25rem;
+  color: #666;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.taskMeta {
+  display: flex;
+  gap: 1rem;
+  margin-left: 2.25rem;
+  font-size: 12px;
+  color: #999;
+}
+
+.dueDate {
+  font-weight: 500;
+  color: #666;
+}
+
+.createdDate {
+  color: #999;
+}
+
+.taskActions {
+  display: flex;
+  gap: 0.5rem;
+  margin-left: 1rem;
+}
+
+.editButton,
+.deleteButton {
+  padding: 0.5rem 1rem;
+  background-color: #fff;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background-color 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.editButton {
+  color: #1976d2;
+  border: 1px solid #bbdefb;
+}
+
+.editButton:hover:not(:disabled) {
+  background-color: #e3f2fd;
+  border-color: #90caf9;
+}
+
+.deleteButton {
+  color: #d32f2f;
+  border: 1px solid #ffcdd2;
+}
+
+.deleteButton:hover:not(:disabled) {
+  background-color: #ffebee;
+  border-color: #ef9a9a;
+}
+
+.editButton:disabled,
+.deleteButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
