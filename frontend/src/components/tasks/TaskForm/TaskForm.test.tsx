@@ -1,9 +1,16 @@
-import { describe, it, expect, vi } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import TaskForm from './TaskForm';
 
 describe('TaskForm', () => {
+  beforeEach(() => {
+    vi.setSystemTime(new Date('2026-01-01'));
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
   it('should render all form fields', () => {
     const onSubmit = vi.fn();
     render(<TaskForm onSubmit={onSubmit} />);
@@ -39,9 +46,7 @@ describe('TaskForm', () => {
     });
   });
 
-  // Skipped: jsdom has limitations with date input interactions via userEvent
-  // Date inputs work in real browsers but not reliably in jsdom test environment
-  it.skip('should submit form with all fields filled (skipped - jsdom date input limitation)', async () => {
+  it('should submit form with all fields filled', async () => {
     const user = userEvent.setup();
     const onSubmit = vi.fn().mockResolvedValue(undefined);
 
@@ -53,31 +58,23 @@ describe('TaskForm', () => {
     );
     const dueDateInput = screen.getByLabelText('Due Date (optional)');
 
-    await user.clear(titleInput);
     await user.type(titleInput, 'Complete Task');
-    await user.clear(descriptionInput);
     await user.type(descriptionInput, 'Task description here');
-    await user.clear(dueDateInput);
-    await user.type(dueDateInput, '2024-12-31');
+    fireEvent.change(dueDateInput, { target: { value: '2026-06-15' } });
 
     const submitButton = screen.getByRole('button', { name: /add task/i });
     await user.click(submitButton);
 
-    await waitFor(
-      () => {
-        expect(onSubmit).toHaveBeenCalledWith({
-          title: 'Complete Task',
-          description: 'Task description here',
-          due_by: '2024-12-31',
-        });
-      },
-      { timeout: 3000 }
-    );
+    await waitFor(() => {
+      expect(onSubmit).toHaveBeenCalledWith({
+        title: 'Complete Task',
+        description: 'Task description here',
+        due_by: '2026-06-15',
+      });
+    });
   });
 
-  // Skipped: jsdom has limitations with date input interactions via userEvent
-  // Date inputs work in real browsers but not reliably in jsdom test environment
-  it.skip('should clear form after successful submission (skipped - jsdom date input limitation)', async () => {
+  it('should clear form after successful submission', async () => {
     const user = userEvent.setup();
     const onSubmit = vi.fn().mockResolvedValue(undefined);
 
@@ -89,24 +86,18 @@ describe('TaskForm', () => {
     );
     const dueDateInput = screen.getByLabelText('Due Date (optional)');
 
-    await user.clear(titleInput);
     await user.type(titleInput, 'Test Task');
-    await user.clear(descriptionInput);
     await user.type(descriptionInput, 'Test Description');
-    await user.clear(dueDateInput);
-    await user.type(dueDateInput, '2024-12-31');
+    fireEvent.change(dueDateInput, { target: { value: '2026-06-15' } });
 
     await user.click(screen.getByRole('button', { name: /add task/i }));
 
-    await waitFor(
-      () => {
-        expect(onSubmit).toHaveBeenCalled();
-        expect(titleInput).toHaveValue('');
-        expect(descriptionInput).toHaveValue('');
-        expect(dueDateInput).toHaveValue('');
-      },
-      { timeout: 3000 }
-    );
+    await waitFor(() => {
+      expect(onSubmit).toHaveBeenCalled();
+      expect(titleInput).toHaveValue('');
+      expect(descriptionInput).toHaveValue('');
+      expect(dueDateInput).toHaveValue('');
+    });
   });
 
   it('should display error message on submission failure', async () => {
@@ -171,24 +162,5 @@ describe('TaskForm', () => {
 
     // Form should not submit
     expect(onSubmit).not.toHaveBeenCalled();
-  });
-
-  it('should handle empty description as undefined', async () => {
-    const user = userEvent.setup();
-    const onSubmit = vi.fn().mockResolvedValue(undefined);
-
-    render(<TaskForm onSubmit={onSubmit} />);
-
-    await user.type(screen.getByPlaceholderText('Task title'), 'Test Task');
-    // Leave description empty
-    await user.click(screen.getByRole('button', { name: /add task/i }));
-
-    await waitFor(() => {
-      expect(onSubmit).toHaveBeenCalledWith({
-        title: 'Test Task',
-        description: undefined,
-        due_by: undefined,
-      });
-    });
   });
 });

@@ -1,9 +1,9 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import TaskBoard from './TaskBoard';
 import { Task } from '../../../types';
-import { TASK_STATUS } from '../../../constants/taskStatus';
+import { TASK_STATUS } from '../../../constants';
 
 const mockTasks: Task[] = [
   {
@@ -12,9 +12,9 @@ const mockTasks: Task[] = [
     description: 'Description 1',
     status: TASK_STATUS.PENDING,
     created_by: 1,
-    created_at: '2024-02-23T10:00:00Z',
-    updated_at: '2024-02-23T10:00:00Z',
-    due_by: '2024-12-31T00:00:00',
+    created_at: '2026-02-23T10:00:00Z',
+    updated_at: '2026-02-23T10:00:00Z',
+    due_by: '2026-12-31T00:00:00',
     deleted_at: null,
   },
   {
@@ -23,8 +23,8 @@ const mockTasks: Task[] = [
     description: 'Description 2',
     status: TASK_STATUS.COMPLETED,
     created_by: 1,
-    created_at: '2024-02-22T10:00:00Z',
-    updated_at: '2024-02-22T10:00:00Z',
+    created_at: '2026-02-22T10:00:00Z',
+    updated_at: '2026-02-22T10:00:00Z',
     due_by: null,
     deleted_at: null,
   },
@@ -42,10 +42,21 @@ vi.mock('../../../services/api', () => ({
 
 import { api } from '../../../services/api';
 
+// Helper function to match text that may be split across multiple elements
+const getByTextContent = (text: string) => {
+  return screen.getByText((_content, element) => {
+    return element?.textContent === text;
+  });
+};
+
 describe('TaskBoard', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    global.confirm = vi.fn(() => true);
+    vi.setSystemTime(new Date('2026-01-01'));
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
   });
 
   it('should fetch and display tasks on mount', async () => {
@@ -71,12 +82,9 @@ describe('TaskBoard', () => {
     render(<TaskBoard />);
 
     await waitFor(() => {
-      expect(screen.getByText(/Total:/)).toBeInTheDocument();
-      expect(screen.getByText(/Pending:/)).toBeInTheDocument();
-      expect(screen.getByText(/Completed:/)).toBeInTheDocument();
-      // Check that stats are displayed (not checking exact values to avoid multiple element issues)
-      const allByText = screen.getAllByText('1');
-      expect(allByText.length).toBeGreaterThan(0);
+      expect(getByTextContent('Total: 2')).toBeInTheDocument();
+      expect(getByTextContent('Pending: 1')).toBeInTheDocument();
+      expect(getByTextContent('Completed: 1')).toBeInTheDocument();
     });
   });
 
@@ -131,9 +139,7 @@ describe('TaskBoard', () => {
     expect(api.getTasks).toHaveBeenCalledTimes(2);
   });
 
-  // Skipped: jsdom has limitations with date input interactions via userEvent
-  // TaskForm includes date inputs that don't work reliably in jsdom test environment
-  it.skip('should create a new task (skipped - jsdom date input limitation)', async () => {
+  it('should create a new task', async () => {
     const user = userEvent.setup();
     const newTask: Task = {
       id: 3,
@@ -141,9 +147,9 @@ describe('TaskBoard', () => {
       description: 'New Description',
       status: TASK_STATUS.PENDING,
       created_by: 1,
-      created_at: '2024-02-24T10:00:00Z',
-      updated_at: '2024-02-24T10:00:00Z',
-      due_by: '2024-12-25T00:00:00',
+      created_at: '2026-02-24T10:00:00Z',
+      updated_at: '2026-02-24T10:00:00Z',
+      due_by: '2026-06-15T00:00:00',
       deleted_at: null,
     };
 
@@ -163,34 +169,25 @@ describe('TaskBoard', () => {
     );
     const dueDateInput = screen.getByLabelText('Due Date (optional)');
 
-    await user.clear(titleInput);
     await user.type(titleInput, 'New Task');
-    await user.clear(descriptionInput);
     await user.type(descriptionInput, 'New Description');
-    await user.clear(dueDateInput);
-    await user.type(dueDateInput, '2024-12-25');
+    fireEvent.change(dueDateInput, { target: { value: '2026-06-15' } });
 
     // Submit form
     const submitButton = screen.getByRole('button', { name: /add task/i });
     await user.click(submitButton);
 
-    await waitFor(
-      () => {
-        expect(api.createTask).toHaveBeenCalledWith({
-          title: 'New Task',
-          description: 'New Description',
-          due_by: '2024-12-25',
-        });
-      },
-      { timeout: 3000 }
-    );
+    await waitFor(() => {
+      expect(api.createTask).toHaveBeenCalledWith({
+        title: 'New Task',
+        description: 'New Description',
+        due_by: '2026-06-15',
+      });
+    });
 
-    await waitFor(
-      () => {
-        expect(screen.getByText('New Task')).toBeInTheDocument();
-      },
-      { timeout: 3000 }
-    );
+    await waitFor(() => {
+      expect(screen.getByText('New Task')).toBeInTheDocument();
+    });
   });
 
   it('should filter tasks by status', async () => {
@@ -259,6 +256,7 @@ describe('TaskBoard', () => {
 
   it('should delete task', async () => {
     const user = userEvent.setup();
+    const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true);
 
     (api.getTasks as ReturnType<typeof vi.fn>).mockResolvedValue(mockTasks);
     (api.deleteTask as ReturnType<typeof vi.fn>).mockResolvedValue(undefined);
@@ -276,14 +274,18 @@ describe('TaskBoard', () => {
     await user.click(deleteButtons[0]);
 
     await waitFor(() => {
-      expect(global.confirm).toHaveBeenCalled();
+      expect(confirmSpy).toHaveBeenCalled();
       expect(api.deleteTask).toHaveBeenCalledWith(1);
       expect(screen.queryByText('Pending Task')).not.toBeInTheDocument();
     });
+
+    confirmSpy.mockRestore();
   });
 
   it('should update statistics when tasks change', async () => {
     const user = userEvent.setup();
+    const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true);
+
     (api.getTasks as ReturnType<typeof vi.fn>).mockResolvedValue(mockTasks);
     (api.deleteTask as ReturnType<typeof vi.fn>).mockResolvedValue(undefined);
 
@@ -293,19 +295,25 @@ describe('TaskBoard', () => {
       expect(screen.getByText('Pending Task')).toBeInTheDocument();
     });
 
-    // Initial stats: 2 total, 1 pending, 1 completed
-    const stats = screen.getAllByText('1');
-    expect(stats.length).toBeGreaterThan(0);
+    // Verify initial stats: 2 total, 1 pending, 1 completed
+    expect(getByTextContent('Total: 2')).toBeInTheDocument();
+    expect(getByTextContent('Pending: 1')).toBeInTheDocument();
+    expect(getByTextContent('Completed: 1')).toBeInTheDocument();
 
-    // Delete a task
+    // Delete the pending task
     const deleteButtons = screen.getAllByRole('button', {
       name: /delete task/i,
     });
     await user.click(deleteButtons[0]);
 
-    // Stats should update: 1 total, 0 pending, 1 completed
+    // Verify updated stats: 1 total, 0 pending, 1 completed
     await waitFor(() => {
       expect(screen.queryByText('Pending Task')).not.toBeInTheDocument();
+      expect(getByTextContent('Total: 1')).toBeInTheDocument();
+      expect(getByTextContent('Pending: 0')).toBeInTheDocument();
+      expect(getByTextContent('Completed: 1')).toBeInTheDocument();
     });
+
+    confirmSpy.mockRestore();
   });
 });

@@ -1,5 +1,5 @@
 import { Task } from '../../../types';
-import { TASK_STATUS } from '../../../constants/taskStatus';
+import { TASK_STATUS } from '../../../constants';
 import { formatDate } from '../../../utils/date';
 import styles from './TaskItem.module.css';
 

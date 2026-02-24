@@ -1,6 +1,5 @@
 import { Task, TaskUpdate } from '../../../types';
-import { TaskFilter } from '../../../constants/taskFilters';
-import { TaskStatus } from '../../../constants/taskStatus';
+import { TaskFilter, TaskStatus } from '../../../constants';
 import TaskCard from '../TaskCard/TaskCard';
 import styles from './TaskList.module.css';
 

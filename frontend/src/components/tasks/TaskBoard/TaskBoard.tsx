@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Task, TaskCreate, TaskUpdate } from '../../../types';
 import { api } from '../../../services/api';
-import { TaskFilter } from '../../../constants/taskFilters';
-import { TASK_STATUS, TaskStatus } from '../../../constants/taskStatus';
+import { TaskFilter, TASK_STATUS, TaskStatus } from '../../../constants';
 import TasksHeader from '../TasksHeader/TasksHeader';
 import TaskForm from '../TaskForm/TaskForm';
 import TaskFilterBar from '../TaskFilterBar/TaskFilterBar';

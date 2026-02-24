@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Task, TaskUpdate } from '../../../types';
-import { TASK_STATUS, TaskStatus } from '../../../constants/taskStatus';
+import { TASK_STATUS, TaskStatus } from '../../../constants';
 import TaskItem from '../TaskItem/TaskItem';
 import TaskEditForm from '../TaskEditForm/TaskEditForm';
 

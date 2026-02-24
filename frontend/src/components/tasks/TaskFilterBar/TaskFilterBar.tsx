@@ -2,7 +2,7 @@ import {
   TaskFilter,
   TASK_FILTERS,
   TASK_FILTER_LABELS,
-} from '../../../constants/taskFilters';
+} from '../../../constants';
 import styles from './TaskFilterBar.module.css';
 
 interface TaskFilterBarProps {

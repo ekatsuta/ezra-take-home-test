@@ -1,6 +1,9 @@
-export const formatDate = (dateString: string | null): string | null => {
+export const formatDate = (
+  dateString: string | null,
+  locale: string = 'en-US'
+): string | null => {
   if (!dateString) return null;
-  return new Date(dateString).toLocaleDateString();
+  return new Date(dateString).toLocaleDateString(locale);
 };
 
 export const formatDateForInput = (dateString: string | null): string => {

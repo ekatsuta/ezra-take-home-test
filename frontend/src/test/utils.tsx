@@ -36,7 +36,7 @@ export const renderWithAuth = (
 };
 
 // Mock API responses
-export const mockApiResponse = (data: any, ok = true) => ({
+export const mockApiResponse = (data: unknown, ok = true) => ({
   ok,
   json: async () => data,
 });

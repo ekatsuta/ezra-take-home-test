@@ -1,9 +1,9 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import TaskCard from './TaskCard';
 import { Task } from '../../../types';
-import { TASK_STATUS } from '../../../constants/taskStatus';
+import { TASK_STATUS } from '../../../constants';
 
 const mockTask: Task = {
   id: 1,
@@ -11,9 +11,9 @@ const mockTask: Task = {
   description: 'Test Description',
   status: TASK_STATUS.PENDING,
   created_by: 1,
-  created_at: '2024-02-23T10:00:00Z',
-  updated_at: '2024-02-23T10:00:00Z',
-  due_by: '2024-12-31T00:00:00',
+  created_at: '2026-02-23T10:00:00Z',
+  updated_at: '2026-02-23T10:00:00Z',
+  due_by: '2026-12-31T00:00:00',
   deleted_at: null,
 };
 
@@ -24,8 +24,12 @@ describe('TaskCard', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    // Mock window.confirm
-    global.confirm = vi.fn(() => true);
+    // Mock system time to a fixed date for consistent tests
+    vi.setSystemTime(new Date('2026-01-01'));
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
   });
 
   it('should render TaskItem in view mode by default', () => {
@@ -88,9 +92,14 @@ describe('TaskCard', () => {
     ).toBeInTheDocument();
   });
 
-  it('should toggle task status from pending to completed', async () => {
+  it('should toggle task status from pending to completed and handle loading state', async () => {
     const user = userEvent.setup();
-    mockOnToggleStatus.mockResolvedValue(undefined);
+    let resolveToggle: () => void;
+    mockOnToggleStatus.mockReturnValue(
+      new Promise<void>(resolve => {
+        resolveToggle = resolve;
+      })
+    );
 
     render(
       <TaskCard
@@ -102,9 +111,26 @@ describe('TaskCard', () => {
     );
 
     const checkbox = screen.getByRole('checkbox');
+    const editButton = screen.getByRole('button', { name: /edit task/i });
+    const deleteButton = screen.getByRole('button', { name: /delete task/i });
+
     await user.click(checkbox);
 
+    // Buttons should be disabled during loading
     await waitFor(() => {
+      expect(checkbox).toBeDisabled();
+      expect(editButton).toBeDisabled();
+      expect(deleteButton).toBeDisabled();
+    });
+
+    // Resolve the promise
+    resolveToggle!();
+
+    // Buttons should be enabled again and toggle should have been called
+    await waitFor(() => {
+      expect(checkbox).not.toBeDisabled();
+      expect(editButton).not.toBeDisabled();
+      expect(deleteButton).not.toBeDisabled();
       expect(mockOnToggleStatus).toHaveBeenCalledWith(1, TASK_STATUS.COMPLETED);
     });
   });
@@ -133,6 +159,7 @@ describe('TaskCard', () => {
 
   it('should delete task after confirmation', async () => {
     const user = userEvent.setup();
+    const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true);
     mockOnDelete.mockResolvedValue(undefined);
 
     render(
@@ -148,16 +175,18 @@ describe('TaskCard', () => {
     await user.click(deleteButton);
 
     await waitFor(() => {
-      expect(global.confirm).toHaveBeenCalledWith(
+      expect(confirmSpy).toHaveBeenCalledWith(
         'Are you sure you want to delete this task?'
       );
       expect(mockOnDelete).toHaveBeenCalledWith(1);
     });
+
+    confirmSpy.mockRestore();
   });
 
   it('should not delete task if confirmation is cancelled', async () => {
     const user = userEvent.setup();
-    global.confirm = vi.fn(() => false);
+    const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(false);
 
     render(
       <TaskCard
@@ -172,14 +201,14 @@ describe('TaskCard', () => {
     await user.click(deleteButton);
 
     await waitFor(() => {
-      expect(global.confirm).toHaveBeenCalled();
+      expect(confirmSpy).toHaveBeenCalled();
       expect(mockOnDelete).not.toHaveBeenCalled();
     });
+
+    confirmSpy.mockRestore();
   });
 
-  // Skipped: jsdom has limitations with date input interactions in TaskEditForm
-  // The save operation involves a form with date inputs that don't work reliably in jsdom
-  it.skip('should update task and exit edit mode on save (skipped - jsdom date input limitation)', async () => {
+  it('should update task and exit edit mode on save', async () => {
     const user = userEvent.setup();
     mockOnUpdate.mockResolvedValue(undefined);
 
@@ -204,61 +233,20 @@ describe('TaskCard', () => {
     const saveButton = screen.getByRole('button', { name: /save/i });
     await user.click(saveButton);
 
-    await waitFor(
-      () => {
-        expect(mockOnUpdate).toHaveBeenCalledWith(
-          1,
-          expect.objectContaining({
-            title: 'Updated Task',
-          })
-        );
-      },
-      { timeout: 3000 }
-    );
-
-    // Should exit edit mode
-    await waitFor(
-      () => {
-        expect(
-          screen.getByRole('button', { name: /edit task/i })
-        ).toBeInTheDocument();
-      },
-      { timeout: 3000 }
-    );
-  });
-
-  it('should handle loading state during operations', async () => {
-    const user = userEvent.setup();
-    let resolveToggle: () => void;
-    mockOnToggleStatus.mockReturnValue(
-      new Promise<void>(resolve => {
-        resolveToggle = resolve;
-      })
-    );
-
-    render(
-      <TaskCard
-        task={mockTask}
-        onToggleStatus={mockOnToggleStatus}
-        onDelete={mockOnDelete}
-        onUpdate={mockOnUpdate}
-      />
-    );
-
-    const checkbox = screen.getByRole('checkbox');
-    await user.click(checkbox);
-
-    // Buttons should be disabled during loading
     await waitFor(() => {
-      expect(checkbox).toBeDisabled();
+      expect(mockOnUpdate).toHaveBeenCalledWith(
+        1,
+        expect.objectContaining({
+          title: 'Updated Task',
+        })
+      );
     });
 
-    // Resolve the promise
-    resolveToggle!();
-
-    // Buttons should be enabled again
+    // Should exit edit mode
     await waitFor(() => {
-      expect(checkbox).not.toBeDisabled();
+      expect(
+        screen.getByRole('button', { name: /edit task/i })
+      ).toBeInTheDocument();
     });
   });
 });
