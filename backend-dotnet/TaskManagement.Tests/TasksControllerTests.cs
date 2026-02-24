@@ -1,5 +1,4 @@
 using System.Net;
-using System.Net.Http.Json;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using TaskManagement.Api.Data;
@@ -42,12 +41,12 @@ public class TasksControllerTests : IClassFixture<TestFixture>, IAsyncLifetime
         );
 
         // Act
-        var response = await _fixture.Client.PostAsJsonAsync("/api/v1/tasks", taskDto);
+        var response = await _fixture.PostAsJsonAsync("/api/v1/tasks", taskDto);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.Created);
 
-        var content = await response.Content.ReadFromJsonAsync<TaskResponseDto>();
+        var content = await _fixture.ReadJsonAsync<TaskResponseDto>(response.Content);
         content.Should().NotBeNull();
         content!.Title.Should().Be("New Task");
         content.Description.Should().Be("Task description");
@@ -69,12 +68,12 @@ public class TasksControllerTests : IClassFixture<TestFixture>, IAsyncLifetime
         );
 
         // Act
-        var response = await _fixture.Client.PostAsJsonAsync("/api/v1/tasks", taskDto);
+        var response = await _fixture.PostAsJsonAsync("/api/v1/tasks", taskDto);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.Created);
 
-        var content = await response.Content.ReadFromJsonAsync<TaskResponseDto>();
+        var content = await _fixture.ReadJsonAsync<TaskResponseDto>(response.Content);
         content.Should().NotBeNull();
         content!.Title.Should().Be("Just Title Task");
         content.Description.Should().BeNull();
@@ -92,7 +91,7 @@ public class TasksControllerTests : IClassFixture<TestFixture>, IAsyncLifetime
         );
 
         // Act
-        var response = await _fixture.Client.PostAsJsonAsync("/api/v1/tasks", taskDto);
+        var response = await _fixture.PostAsJsonAsync("/api/v1/tasks", taskDto);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
@@ -109,7 +108,7 @@ public class TasksControllerTests : IClassFixture<TestFixture>, IAsyncLifetime
 
         // Create a second task
         var taskDto = new TaskCreateDto(Title: "Second Task", Description: null, DueBy: null);
-        await _fixture.Client.PostAsJsonAsync("/api/v1/tasks", taskDto);
+        await _fixture.PostAsJsonAsync("/api/v1/tasks", taskDto);
 
         // Act
         var response = await _fixture.Client.GetAsync("/api/v1/tasks");
@@ -117,7 +116,7 @@ public class TasksControllerTests : IClassFixture<TestFixture>, IAsyncLifetime
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var content = await response.Content.ReadFromJsonAsync<List<TaskResponseDto>>();
+        var content = await _fixture.ReadJsonAsync<List<TaskResponseDto>>(response.Content);
         content.Should().NotBeNull();
         content!.Count.Should().Be(2);
         content.Should().OnlyContain(t => t.CreatedBy == user.Id);
@@ -136,7 +135,7 @@ public class TasksControllerTests : IClassFixture<TestFixture>, IAsyncLifetime
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var content = await response.Content.ReadFromJsonAsync<List<TaskResponseDto>>();
+        var content = await _fixture.ReadJsonAsync<List<TaskResponseDto>>(response.Content);
         content.Should().NotBeNull();
         content!.Should().BeEmpty();
     }
@@ -157,12 +156,12 @@ public class TasksControllerTests : IClassFixture<TestFixture>, IAsyncLifetime
         );
 
         // Act
-        var response = await _fixture.Client.PutAsJsonAsync($"/api/v1/tasks/{task.Id}", updateDto);
+        var response = await _fixture.PutAsJsonAsync($"/api/v1/tasks/{task.Id}", updateDto);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var content = await response.Content.ReadFromJsonAsync<TaskResponseDto>();
+        var content = await _fixture.ReadJsonAsync<TaskResponseDto>(response.Content);
         content.Should().NotBeNull();
         content!.Title.Should().Be("Updated Title");
         content.Description.Should().Be(task.Description);
@@ -184,12 +183,12 @@ public class TasksControllerTests : IClassFixture<TestFixture>, IAsyncLifetime
         );
 
         // Act
-        var response = await _fixture.Client.PutAsJsonAsync($"/api/v1/tasks/{task.Id}", updateDto);
+        var response = await _fixture.PutAsJsonAsync($"/api/v1/tasks/{task.Id}", updateDto);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var content = await response.Content.ReadFromJsonAsync<TaskResponseDto>();
+        var content = await _fixture.ReadJsonAsync<TaskResponseDto>(response.Content);
         content.Should().NotBeNull();
         content!.Status.Should().Be(TaskManagement.Api.Models.TaskStatus.Completed);
     }
@@ -210,12 +209,12 @@ public class TasksControllerTests : IClassFixture<TestFixture>, IAsyncLifetime
         );
 
         // Act
-        var response = await _fixture.Client.PutAsJsonAsync($"/api/v1/tasks/{task.Id}", updateDto);
+        var response = await _fixture.PutAsJsonAsync($"/api/v1/tasks/{task.Id}", updateDto);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var content = await response.Content.ReadFromJsonAsync<TaskResponseDto>();
+        var content = await _fixture.ReadJsonAsync<TaskResponseDto>(response.Content);
         content.Should().NotBeNull();
         content!.Title.Should().Be("Updated Task");
         content.Description.Should().Be("Updated Description");
@@ -232,7 +231,7 @@ public class TasksControllerTests : IClassFixture<TestFixture>, IAsyncLifetime
         var updateDto = new TaskUpdateDto(Title: "Updated", Description: null, Status: null, DueBy: null);
 
         // Act
-        var response = await _fixture.Client.PutAsJsonAsync("/api/v1/tasks/999", updateDto);
+        var response = await _fixture.PutAsJsonAsync("/api/v1/tasks/999", updateDto);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
@@ -251,7 +250,7 @@ public class TasksControllerTests : IClassFixture<TestFixture>, IAsyncLifetime
         var updateDto = new TaskUpdateDto(Title: "Updated", Description: null, Status: null, DueBy: null);
 
         // Act
-        var response = await _fixture.Client.PutAsJsonAsync($"/api/v1/tasks/{task.Id}", updateDto);
+        var response = await _fixture.PutAsJsonAsync($"/api/v1/tasks/{task.Id}", updateDto);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
@@ -286,7 +285,7 @@ public class TasksControllerTests : IClassFixture<TestFixture>, IAsyncLifetime
         var updateDto = new TaskUpdateDto(Title: "Updated", Description: null, Status: null, DueBy: null);
 
         // Act
-        var response = await _fixture.Client.PutAsJsonAsync($"/api/v1/tasks/{task.Id}", updateDto);
+        var response = await _fixture.PutAsJsonAsync($"/api/v1/tasks/{task.Id}", updateDto);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
@@ -308,7 +307,7 @@ public class TasksControllerTests : IClassFixture<TestFixture>, IAsyncLifetime
 
         // Verify task is not in list
         var getResponse = await _fixture.Client.GetAsync("/api/v1/tasks");
-        var tasks = await getResponse.Content.ReadFromJsonAsync<List<TaskResponseDto>>();
+        var tasks = await _fixture.ReadJsonAsync<List<TaskResponseDto>>(getResponse.Content);
         tasks.Should().BeEmpty();
     }
 
@@ -398,7 +397,43 @@ public class TasksControllerTests : IClassFixture<TestFixture>, IAsyncLifetime
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var tasks = await response.Content.ReadFromJsonAsync<List<TaskResponseDto>>();
+        var tasks = await _fixture.ReadJsonAsync<List<TaskResponseDto>>(response.Content);
         tasks.Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task UpdateTask_ClearDueBy_SetsDueByToNull()
+    {
+        // Arrange
+        var user = await _fixture.CreateSampleUserAsync();
+        _fixture.Client.DefaultRequestHeaders.Authorization = _fixture.GetAuthHeaders(user);
+
+        var createDto = new TaskCreateDto(
+            Title: "Task with due date",
+            Description: null,
+            DueBy: DateTime.UtcNow.Date.AddDays(7)
+        );
+        var createResponse = await _fixture.PostAsJsonAsync("/api/v1/tasks", createDto);
+        createResponse.StatusCode.Should().Be(HttpStatusCode.Created);
+        var created = await _fixture.ReadJsonAsync<TaskResponseDto>(createResponse.Content);
+        created.Should().NotBeNull();
+        created!.DueBy.Should().NotBeNull();
+
+        var updateDto = new TaskUpdateDto(
+            Title: null,
+            Description: null,
+            Status: null,
+            DueBy: null,
+            ClearDueBy: true
+        );
+
+        // Act
+        var updateResponse = await _fixture.PutAsJsonAsync($"/api/v1/tasks/{created.Id}", updateDto);
+
+        // Assert
+        updateResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+        var updated = await _fixture.ReadJsonAsync<TaskResponseDto>(updateResponse.Content);
+        updated.Should().NotBeNull();
+        updated!.DueBy.Should().BeNull();
     }
 }

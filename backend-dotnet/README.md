@@ -48,16 +48,21 @@ The API will be available at:
 
 Edit `appsettings.json` to configure:
 
-- **JWT Secret Key**: Change the secret key for production
 - **CORS Origins**: Add allowed frontend origins
 - **Database**: SQLite database path (default: `app.db`)
+- **JWT Secret Key**: Set via environment variable (`JWT__SecretKey`)
+
+Set JWT secret before running:
+
+```bash
+export JWT__SecretKey="replace-with-a-strong-random-secret-at-least-32-characters"
+```
 
 Example:
 
 ```json
 {
   "JWT": {
-    "SecretKey": "your-secret-key-min-32-characters-long-change-in-production",
     "ExpirationMinutes": "30"
   },
   "CORS": {
@@ -230,7 +235,7 @@ See [MIGRATION.md](../MIGRATION.md) for detailed comparison and migration guide.
 For production:
 
 1. **Update Configuration**
-   - Set a strong JWT secret key
+   - Set a strong `JWT__SecretKey` environment variable
    - Configure production database connection
    - Update CORS origins
    - Set `ASPNETCORE_ENVIRONMENT=Production`

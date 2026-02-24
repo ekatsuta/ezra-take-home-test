@@ -58,10 +58,17 @@ Objective: Build a small to-do task management API and frontend.
   dotnet restore
   ```
 
-4. **Run the application**
+4. **Set JWT secret (required)**
+  ```bash
+  export JWT__SecretKey="replace-with-a-strong-random-secret-at-least-32-characters"
+  ```
+
+5. **Run the application**
   ```bash
   dotnet run
   ```
+
+Note: `docker-compose.yml` already defines `JWT__SecretKey` for local Docker runs.
 
 ### Frontend
 

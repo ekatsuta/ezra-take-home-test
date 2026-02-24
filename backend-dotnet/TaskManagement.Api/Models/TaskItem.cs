@@ -19,8 +19,7 @@ public class TaskItem
 
     [Required]
     [Column("status")]
-    [MaxLength(50)]
-    public string Status { get; set; } = TaskStatus.Pending;
+    public TaskStatus Status { get; set; } = TaskStatus.Pending;
 
     [Column("created_at")]
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
@@ -43,8 +42,8 @@ public class TaskItem
     public User? Creator { get; set; }
 }
 
-public static class TaskStatus
+public enum TaskStatus
 {
-    public const string Pending = "pending";
-    public const string Completed = "completed";
+    Pending,
+    Completed
 }

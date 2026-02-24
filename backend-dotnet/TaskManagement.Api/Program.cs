@@ -1,4 +1,6 @@
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -11,7 +13,13 @@ using TaskManagement.Api.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+        options.JsonSerializerOptions.Converters.Add(
+            new JsonStringEnumConverter(JsonNamingPolicy.CamelCase, allowIntegerValues: false));
+    });
 builder.Services.AddEndpointsApiExplorer();
 
 // Configure Swagger with JWT authentication
@@ -53,10 +61,17 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+var jwtSecret = builder.Configuration["JWT:SecretKey"];
+if (string.IsNullOrWhiteSpace(jwtSecret))
+{
+    throw new InvalidOperationException(
+        "JWT SecretKey not configured. Set JWT__SecretKey in environment variables or user secrets.");
+}
+
 // Configure JWT Settings
 var jwtSettings = new JwtSettings
 {
-    SecretKey = builder.Configuration["JWT:SecretKey"] ?? throw new InvalidOperationException("JWT SecretKey not configured"),
+    SecretKey = jwtSecret,
     Issuer = builder.Configuration["JWT:Issuer"] ?? "TaskManagementApi",
     Audience = builder.Configuration["JWT:Audience"] ?? "TaskManagementClient",
     ExpirationMinutes = int.Parse(builder.Configuration["JWT:ExpirationMinutes"] ?? "30")

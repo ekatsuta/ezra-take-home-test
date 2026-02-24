@@ -1,5 +1,4 @@
 using System.Net;
-using System.Net.Http.Json;
 using FluentAssertions;
 using TaskManagement.Api.DTOs;
 using TaskManagement.Tests.Fixtures;
@@ -36,12 +35,12 @@ public class AuthControllerTests : IClassFixture<TestFixture>, IAsyncLifetime
         );
 
         // Act
-        var response = await _fixture.Client.PostAsJsonAsync("/api/v1/auth/register", registerDto);
+        var response = await _fixture.PostAsJsonAsync("/api/v1/auth/register", registerDto);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.Created);
 
-        var content = await response.Content.ReadFromJsonAsync<TokenResponseDto>();
+        var content = await _fixture.ReadJsonAsync<TokenResponseDto>(response.Content);
         content.Should().NotBeNull();
         content!.User.Email.Should().Be(registerDto.Email);
         content.User.Name.Should().Be(registerDto.Name);
@@ -61,7 +60,7 @@ public class AuthControllerTests : IClassFixture<TestFixture>, IAsyncLifetime
         );
 
         // Act
-        var response = await _fixture.Client.PostAsJsonAsync("/api/v1/auth/register", registerDto);
+        var response = await _fixture.PostAsJsonAsync("/api/v1/auth/register", registerDto);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
@@ -82,7 +81,7 @@ public class AuthControllerTests : IClassFixture<TestFixture>, IAsyncLifetime
         };
 
         // Act
-        var response = await _fixture.Client.PostAsJsonAsync("/api/v1/auth/register", registerDto);
+        var response = await _fixture.PostAsJsonAsync("/api/v1/auth/register", registerDto);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
@@ -100,7 +99,7 @@ public class AuthControllerTests : IClassFixture<TestFixture>, IAsyncLifetime
         };
 
         // Act
-        var response = await _fixture.Client.PostAsJsonAsync("/api/v1/auth/register", registerDto);
+        var response = await _fixture.PostAsJsonAsync("/api/v1/auth/register", registerDto);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
@@ -117,12 +116,12 @@ public class AuthControllerTests : IClassFixture<TestFixture>, IAsyncLifetime
         );
 
         // Act
-        var response = await _fixture.Client.PostAsJsonAsync("/api/v1/auth/login", loginDto);
+        var response = await _fixture.PostAsJsonAsync("/api/v1/auth/login", loginDto);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var content = await response.Content.ReadFromJsonAsync<TokenResponseDto>();
+        var content = await _fixture.ReadJsonAsync<TokenResponseDto>(response.Content);
         content.Should().NotBeNull();
         content!.User.Email.Should().Be(loginDto.Email);
         content!.User.Name.Should().Be("Test User");
@@ -140,7 +139,7 @@ public class AuthControllerTests : IClassFixture<TestFixture>, IAsyncLifetime
         );
 
         // Act
-        var response = await _fixture.Client.PostAsJsonAsync("/api/v1/auth/login", loginDto);
+        var response = await _fixture.PostAsJsonAsync("/api/v1/auth/login", loginDto);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
@@ -160,7 +159,7 @@ public class AuthControllerTests : IClassFixture<TestFixture>, IAsyncLifetime
         );
 
         // Act
-        var response = await _fixture.Client.PostAsJsonAsync("/api/v1/auth/login", loginDto);
+        var response = await _fixture.PostAsJsonAsync("/api/v1/auth/login", loginDto);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
@@ -182,7 +181,7 @@ public class AuthControllerTests : IClassFixture<TestFixture>, IAsyncLifetime
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var content = await response.Content.ReadFromJsonAsync<UserResponseDto>();
+        var content = await _fixture.ReadJsonAsync<UserResponseDto>(response.Content);
         content.Should().NotBeNull();
         content!.Email.Should().Be(user.Email);
         content.Name.Should().Be(user.Name);

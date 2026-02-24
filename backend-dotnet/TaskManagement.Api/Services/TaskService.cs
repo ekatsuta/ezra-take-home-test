@@ -22,7 +22,7 @@ public class TaskService : ITaskService
             Description = taskDto.Description,
             DueBy = taskDto.DueBy,
             CreatedBy = userId,
-            Status = Models.TaskStatus.Pending,
+            Status = TaskManagement.Api.Models.TaskStatus.Pending,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow
         };
@@ -52,7 +52,8 @@ public class TaskService : ITaskService
 
     public async Task<TaskItem> UpdateTaskAsync(int taskId, TaskUpdateDto taskDto)
     {
-        var task = await _context.Tasks.FindAsync(taskId);
+        var task = await _context.Tasks
+            .FirstOrDefaultAsync(t => t.Id == taskId && t.DeletedAt == null);
 
         if (task == null)
             throw new KeyNotFoundException("Task not found");
@@ -63,10 +64,12 @@ public class TaskService : ITaskService
         if (taskDto.Description != null)
             task.Description = taskDto.Description;
 
-        if (taskDto.Status != null)
-            task.Status = taskDto.Status;
+        if (taskDto.Status.HasValue)
+            task.Status = taskDto.Status.Value;
 
-        if (taskDto.DueBy.HasValue)
+        if (taskDto.ClearDueBy)
+            task.DueBy = null;
+        else if (taskDto.DueBy.HasValue)
             task.DueBy = taskDto.DueBy;
 
         task.UpdatedAt = DateTime.UtcNow;
@@ -78,7 +81,8 @@ public class TaskService : ITaskService
 
     public async Task DeleteTaskAsync(int taskId)
     {
-        var task = await _context.Tasks.FindAsync(taskId);
+        var task = await _context.Tasks
+            .FirstOrDefaultAsync(t => t.Id == taskId && t.DeletedAt == null);
 
         if (task == null)
             throw new KeyNotFoundException("Task not found");

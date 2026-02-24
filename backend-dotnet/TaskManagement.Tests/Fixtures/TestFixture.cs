@@ -1,5 +1,7 @@
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Microsoft.Extensions.DependencyInjection;
 using TaskManagement.Api.Data;
 using TaskManagement.Api.Models;
@@ -11,11 +13,35 @@ public class TestFixture : IDisposable
 {
     public HttpClient Client { get; }
     public TestWebApplicationFactory<Program> Factory { get; }
+    public JsonSerializerOptions JsonOptions { get; }
 
     public TestFixture()
     {
+        Environment.SetEnvironmentVariable(
+            "JWT__SecretKey",
+            "test-secret-key-at-least-32-characters-long");
+
+        JsonOptions = new JsonSerializerOptions(JsonSerializerDefaults.Web);
+        JsonOptions.Converters.Add(
+            new JsonStringEnumConverter(JsonNamingPolicy.CamelCase, allowIntegerValues: false));
+
         Factory = new TestWebApplicationFactory<Program>();
         Client = Factory.CreateClient();
+    }
+
+    public Task<HttpResponseMessage> PostAsJsonAsync<T>(string requestUri, T value)
+    {
+        return Client.PostAsync(requestUri, JsonContent.Create(value, options: JsonOptions));
+    }
+
+    public Task<HttpResponseMessage> PutAsJsonAsync<T>(string requestUri, T value)
+    {
+        return Client.PutAsync(requestUri, JsonContent.Create(value, options: JsonOptions));
+    }
+
+    public Task<T?> ReadJsonAsync<T>(HttpContent content)
+    {
+        return content.ReadFromJsonAsync<T>(JsonOptions);
     }
 
     public async Task<User> CreateSampleUserAsync()

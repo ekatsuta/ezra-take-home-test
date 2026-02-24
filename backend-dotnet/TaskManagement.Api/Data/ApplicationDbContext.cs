@@ -30,7 +30,8 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<TaskItem>(entity =>
         {
             entity.Property(t => t.Status)
-                .HasDefaultValue(Models.TaskStatus.Pending);
+                .HasConversion<string>()
+                .HasDefaultValue(TaskManagement.Api.Models.TaskStatus.Pending);
 
             entity.Property(t => t.CreatedAt)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP");

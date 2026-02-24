@@ -67,7 +67,10 @@ public class TasksController : ControllerBase
             return Unauthorized(new { detail = "Could not validate credentials" });
         }
 
-        var tasks = await _taskService.GetTasksByUserAsync(userId.Value, skip, limit);
+        var normalizedSkip = Math.Max(0, skip);
+        var normalizedLimit = Math.Clamp(limit, 1, 100);
+
+        var tasks = await _taskService.GetTasksByUserAsync(userId.Value, normalizedSkip, normalizedLimit);
 
         var response = tasks.Select(t => new TaskResponseDto(
             t.Id,

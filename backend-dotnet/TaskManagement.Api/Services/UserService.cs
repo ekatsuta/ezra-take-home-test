@@ -16,16 +16,20 @@ public class UserService : IUserService
 
     public async Task<User?> GetUserByEmailAsync(string email)
     {
+        var normalizedEmail = NormalizeEmail(email);
+
         return await _context.Users
-            .Where(u => u.Email == email && u.DeletedAt == null)
+            .Where(u => u.Email.ToLower() == normalizedEmail && u.DeletedAt == null)
             .FirstOrDefaultAsync();
     }
 
     public async Task<User> CreateUserAsync(UserRegisterDto userDto)
     {
+        var normalizedEmail = NormalizeEmail(userDto.Email);
+
         var user = new User
         {
-            Email = userDto.Email,
+            Email = normalizedEmail,
             Name = userDto.Name,
             HashedPassword = BCrypt.Net.BCrypt.HashPassword(userDto.Password),
             CreatedAt = DateTime.UtcNow
@@ -47,5 +51,10 @@ public class UserService : IUserService
         bool isValidPassword = BCrypt.Net.BCrypt.Verify(password, user.HashedPassword);
 
         return isValidPassword ? user : null;
+    }
+
+    private static string NormalizeEmail(string email)
+    {
+        return email.Trim().ToLowerInvariant();
     }
 }
