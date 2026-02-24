@@ -5,11 +5,6 @@ from app.schemas.user import UserRegister
 from app.utils.security import hash_password, verify_password
 
 
-def get_user_by_id(db: Session, user_id: int) -> Optional[User]:
-    """Get user by ID (excludes soft-deleted users)."""
-    return db.query(User).filter(User.id == user_id, User.deleted_at.is_(None)).first()
-
-
 def get_user_by_email(db: Session, email: str) -> Optional[User]:
     """Get user by email (excludes soft-deleted users)."""
     return db.query(User).filter(User.email == email, User.deleted_at.is_(None)).first()

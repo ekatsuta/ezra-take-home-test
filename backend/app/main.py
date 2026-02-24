@@ -4,7 +4,7 @@ from fastapi.exceptions import RequestValidationError
 from contextlib import asynccontextmanager
 from app.config import settings
 from app.database import init_db
-from app.routers import health, tasks, auth
+from app.routers import tasks, auth
 from app.utils.errors import validation_exception_handler
 
 
@@ -36,7 +36,6 @@ app.add_middleware(
 )
 
 # Include routers
-app.include_router(health.router, prefix="/api/v1")
 app.include_router(auth.router, prefix="/api/v1")
 app.include_router(tasks.router, prefix="/api/v1")
 

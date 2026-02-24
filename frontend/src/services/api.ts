@@ -1,4 +1,4 @@
-import { HealthResponse, Task, TaskCreate, TaskUpdate } from '../types';
+import { Task, TaskCreate, TaskUpdate } from '../types';
 import { parseApiError } from '../utils/apiErrors';
 import { convertDateToISO } from '../utils/date';
 
@@ -37,11 +37,7 @@ const apiRequest = async <T>(
 };
 
 export const api = {
-  checkHealth: () => apiRequest<HealthResponse>('/health'),
-
   getTasks: () => apiRequest<Task[]>('/tasks'),
-
-  getTask: (id: number) => apiRequest<Task>(`/tasks/${id}`),
 
   createTask: (task: TaskCreate) =>
     apiRequest<Task>('/tasks', {

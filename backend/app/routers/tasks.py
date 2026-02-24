@@ -24,21 +24,6 @@ async def create_task(
     return db_task
 
 
-@router.get("/tasks/{task_id}", response_model=TaskResponse)
-async def get_task(
-    task_id: int,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
-):
-    """Get a task by ID. Users can only access their own tasks."""
-    task = task_service.get_task_by_id(db, task_id)
-    if not task:
-        raise task_not_found_exception
-    if task.created_by != current_user.id:
-        raise task_forbidden_exception
-    return task
-
-
 @router.get("/tasks", response_model=List[TaskResponse])
 async def get_user_tasks(
     skip: int = 0,

@@ -31,8 +31,3 @@ export interface TaskUpdate {
   status?: TaskStatus;
   due_by?: string;
 }
-
-export interface HealthResponse {
-  status: string;
-  message: string;
-}

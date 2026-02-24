@@ -47,46 +47,6 @@ class TestTaskEndpoints:
         )
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
-    def test_get_task(self, client, auth_headers, sample_task):
-        """Test getting a task by ID."""
-        response = client.get(f"/api/v1/tasks/{sample_task.id}", headers=auth_headers)
-        assert response.status_code == status.HTTP_200_OK
-        data = response.json()
-        assert data["id"] == sample_task.id
-        assert data["title"] == sample_task.title
-        assert data["description"] == sample_task.description
-
-    def test_get_task_not_found(self, client, auth_headers):
-        """Test getting a non-existent task."""
-        response = client.get("/api/v1/tasks/999", headers=auth_headers)
-        assert response.status_code == status.HTTP_404_NOT_FOUND
-        assert response.json()["detail"] == "Task not found"
-
-    def test_get_task_unauthorized(self, client, sample_task):
-        """Test getting a task without authentication."""
-        response = client.get(f"/api/v1/tasks/{sample_task.id}")
-        assert response.status_code == status.HTTP_401_UNAUTHORIZED
-
-    def test_get_task_forbidden(self, client, sample_task, db_session):
-        """Test that users cannot access other users' tasks."""
-        # Create another user
-        other_user = User(
-            email="other@example.com",
-            name="Other User",
-            hashed_password=hash_password("password123"),
-        )
-        db_session.add(other_user)
-        db_session.commit()
-        db_session.refresh(other_user)
-
-        # Create auth headers for the other user
-        other_token = create_access_token(data={"sub": other_user.email})
-        other_headers = {"Authorization": f"Bearer {other_token}"}
-
-        # Try to access sample_task (which belongs to sample_user)
-        response = client.get(f"/api/v1/tasks/{sample_task.id}", headers=other_headers)
-        assert response.status_code == status.HTTP_403_FORBIDDEN
-
     def test_get_user_tasks(self, client, auth_headers, sample_user, sample_task):
         """Test getting all tasks for the authenticated user."""
         # Create another task
@@ -193,11 +153,11 @@ class TestTaskEndpoints:
         )
         assert response.status_code == status.HTTP_204_NO_CONTENT
 
-        # Verify task is soft deleted (not returned)
-        get_response = client.get(
-            f"/api/v1/tasks/{sample_task.id}", headers=auth_headers
-        )
-        assert get_response.status_code == status.HTTP_404_NOT_FOUND
+        # Verify task is soft deleted (not in list of tasks)
+        get_response = client.get("/api/v1/tasks", headers=auth_headers)
+        assert get_response.status_code == status.HTTP_200_OK
+        tasks = get_response.json()
+        assert len(tasks) == 0
 
     def test_delete_task_not_found(self, client, auth_headers):
         """Test deleting a non-existent task."""

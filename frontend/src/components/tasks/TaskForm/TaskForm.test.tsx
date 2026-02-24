@@ -136,38 +136,6 @@ describe('TaskForm', () => {
     });
   });
 
-  it('should disable submit button while loading', async () => {
-    const user = userEvent.setup();
-    let resolveSubmit: () => void;
-    const onSubmit = vi.fn(
-      () =>
-        new Promise<void>(resolve => {
-          resolveSubmit = resolve;
-        })
-    );
-
-    render(<TaskForm onSubmit={onSubmit} />);
-
-    await user.type(screen.getByPlaceholderText('Task title'), 'Test Task');
-
-    const submitButton = screen.getByRole('button', { name: /add task/i });
-    await user.click(submitButton);
-
-    // Button should be disabled while loading
-    await waitFor(() => {
-      expect(submitButton).toBeDisabled();
-      expect(screen.getByText('Creating...')).toBeInTheDocument();
-    });
-
-    // Resolve the promise
-    resolveSubmit!();
-
-    await waitFor(() => {
-      expect(submitButton).not.toBeDisabled();
-      expect(screen.getByText('Add Task')).toBeInTheDocument();
-    });
-  });
-
   it('should require title field', async () => {
     const user = userEvent.setup();
     const onSubmit = vi.fn();

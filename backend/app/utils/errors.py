@@ -4,7 +4,7 @@ from fastapi.responses import JSONResponse
 
 
 async def validation_exception_handler(
-    request: Request,
+    _request: Request,
     exc: RequestValidationError,
 ):
     """Format validation errors into user-friendly messages."""
