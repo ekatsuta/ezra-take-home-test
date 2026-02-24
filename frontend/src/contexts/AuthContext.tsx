@@ -64,10 +64,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
 
     const data = await response.json();
-    const { user: userData, access_token } = data;
+    const { user: userData, accessToken } = data;
 
-    localStorage.setItem('token', access_token);
-    setToken(access_token);
+    localStorage.setItem('token', accessToken);
+    setToken(accessToken);
     setUser(userData);
   };
 
@@ -86,10 +86,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
 
     const data = await response.json();
-    const { user: userData, access_token } = data;
+    const { user: userData, accessToken } = data;
 
-    localStorage.setItem('token', access_token);
-    setToken(access_token);
+    localStorage.setItem('token', accessToken);
+    setToken(accessToken);
     setUser(userData);
   };
 
