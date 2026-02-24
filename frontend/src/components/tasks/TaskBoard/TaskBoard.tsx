@@ -60,7 +60,6 @@ export default function TaskBoard() {
     task => task.status === TASK_STATUS.COMPLETED
   ).length;
 
-  // Filter tasks based on active filter
   const filteredTasks = tasks.filter(task => {
     if (filter === 'all') return true;
     return task.status === filter;

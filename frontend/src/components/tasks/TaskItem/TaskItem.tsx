@@ -20,6 +20,7 @@ export default function TaskItem({
 }: TaskItemProps) {
   return (
     <div
+      data-testid={`task-${task.id}`}
       className={`${styles.taskItem} ${
         task.status === TASK_STATUS.COMPLETED && styles.completed
       }`}

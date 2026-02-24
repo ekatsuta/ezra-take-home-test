@@ -1,5 +1,5 @@
 import { useAuth } from '../../contexts/AuthContext';
-import Tasks from '../../components/tasks/TaskBoard/TaskBoard';
+import TaskBoard from '../../components/tasks/TaskBoard/TaskBoard';
 import styles from './Dashboard.module.css';
 
 export default function Dashboard() {
@@ -17,7 +17,7 @@ export default function Dashboard() {
         </div>
       </header>
       <main>
-        <Tasks />
+        <TaskBoard />
       </main>
     </div>
   );

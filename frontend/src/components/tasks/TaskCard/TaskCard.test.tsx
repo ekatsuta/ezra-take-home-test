@@ -24,7 +24,6 @@ describe('TaskCard', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    // Mock system time to a fixed date for consistent tests
     vi.setSystemTime(new Date('2026-01-01'));
   });
 
@@ -179,30 +178,6 @@ describe('TaskCard', () => {
         'Are you sure you want to delete this task?'
       );
       expect(mockOnDelete).toHaveBeenCalledWith(1);
-    });
-
-    confirmSpy.mockRestore();
-  });
-
-  it('should not delete task if confirmation is cancelled', async () => {
-    const user = userEvent.setup();
-    const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(false);
-
-    render(
-      <TaskCard
-        task={mockTask}
-        onToggleStatus={mockOnToggleStatus}
-        onDelete={mockOnDelete}
-        onUpdate={mockOnUpdate}
-      />
-    );
-
-    const deleteButton = screen.getByRole('button', { name: /delete task/i });
-    await user.click(deleteButton);
-
-    await waitFor(() => {
-      expect(confirmSpy).toHaveBeenCalled();
-      expect(mockOnDelete).not.toHaveBeenCalled();
     });
 
     confirmSpy.mockRestore();

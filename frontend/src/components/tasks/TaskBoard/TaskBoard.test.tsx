@@ -69,8 +69,8 @@ describe('TaskBoard', () => {
 
     // Wait for tasks to load
     await waitFor(() => {
-      expect(screen.getByText('Pending Task')).toBeInTheDocument();
-      expect(screen.getByText('Completed Task')).toBeInTheDocument();
+      expect(screen.getByTestId('task-1')).toBeInTheDocument();
+      expect(screen.getByTestId('task-2')).toBeInTheDocument();
     });
 
     expect(api.getTasks).toHaveBeenCalledTimes(1);
@@ -133,7 +133,7 @@ describe('TaskBoard', () => {
 
     // Should fetch tasks successfully
     await waitFor(() => {
-      expect(screen.getByText('Pending Task')).toBeInTheDocument();
+      expect(screen.getByTestId('task-1')).toBeInTheDocument();
     });
 
     expect(api.getTasks).toHaveBeenCalledTimes(2);
@@ -159,7 +159,7 @@ describe('TaskBoard', () => {
     render(<TaskBoard />);
 
     await waitFor(() => {
-      expect(screen.getByText('Pending Task')).toBeInTheDocument();
+      expect(screen.getByTestId('task-1')).toBeInTheDocument();
     });
 
     // Fill in task form
@@ -186,7 +186,7 @@ describe('TaskBoard', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByText('New Task')).toBeInTheDocument();
+      expect(screen.getByTestId('task-3')).toBeInTheDocument();
     });
   });
 
@@ -196,34 +196,34 @@ describe('TaskBoard', () => {
 
     render(<TaskBoard />);
 
-    // Wait for tasks to load
+    // Wait for tasks to load - verify both tasks present
     await waitFor(() => {
-      expect(screen.getByText('Pending Task')).toBeInTheDocument();
-      expect(screen.getByText('Completed Task')).toBeInTheDocument();
+      expect(screen.getByTestId('task-1')).toBeInTheDocument(); // Pending task
+      expect(screen.getByTestId('task-2')).toBeInTheDocument(); // Completed task
     });
 
-    // Click Pending filter
+    // Filter by Pending - only task 1 should be visible
     await user.click(screen.getByRole('button', { name: 'Pending' }));
 
     await waitFor(() => {
-      expect(screen.getByText('Pending Task')).toBeInTheDocument();
-      expect(screen.queryByText('Completed Task')).not.toBeInTheDocument();
+      expect(screen.getByTestId('task-1')).toBeInTheDocument();
+      expect(screen.queryByTestId('task-2')).not.toBeInTheDocument();
     });
 
-    // Click Completed filter
+    // Filter by Completed - only task 2 should be visible
     await user.click(screen.getByRole('button', { name: 'Completed' }));
 
     await waitFor(() => {
-      expect(screen.queryByText('Pending Task')).not.toBeInTheDocument();
-      expect(screen.getByText('Completed Task')).toBeInTheDocument();
+      expect(screen.queryByTestId('task-1')).not.toBeInTheDocument();
+      expect(screen.getByTestId('task-2')).toBeInTheDocument();
     });
 
-    // Click All filter
+    // Filter by All - both tasks should be visible
     await user.click(screen.getByRole('button', { name: 'All' }));
 
     await waitFor(() => {
-      expect(screen.getByText('Pending Task')).toBeInTheDocument();
-      expect(screen.getByText('Completed Task')).toBeInTheDocument();
+      expect(screen.getByTestId('task-1')).toBeInTheDocument();
+      expect(screen.getByTestId('task-2')).toBeInTheDocument();
     });
   });
 
@@ -240,7 +240,7 @@ describe('TaskBoard', () => {
     render(<TaskBoard />);
 
     await waitFor(() => {
-      expect(screen.getByText('Pending Task')).toBeInTheDocument();
+      expect(screen.getByTestId('task-1')).toBeInTheDocument();
     });
 
     // Click checkbox to toggle status
@@ -264,7 +264,7 @@ describe('TaskBoard', () => {
     render(<TaskBoard />);
 
     await waitFor(() => {
-      expect(screen.getByText('Pending Task')).toBeInTheDocument();
+      expect(screen.getByTestId('task-1')).toBeInTheDocument();
     });
 
     // Click delete button
@@ -276,7 +276,7 @@ describe('TaskBoard', () => {
     await waitFor(() => {
       expect(confirmSpy).toHaveBeenCalled();
       expect(api.deleteTask).toHaveBeenCalledWith(1);
-      expect(screen.queryByText('Pending Task')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('task-1')).not.toBeInTheDocument();
     });
 
     confirmSpy.mockRestore();
@@ -292,7 +292,7 @@ describe('TaskBoard', () => {
     render(<TaskBoard />);
 
     await waitFor(() => {
-      expect(screen.getByText('Pending Task')).toBeInTheDocument();
+      expect(screen.getByTestId('task-1')).toBeInTheDocument();
     });
 
     // Verify initial stats: 2 total, 1 pending, 1 completed
@@ -308,7 +308,7 @@ describe('TaskBoard', () => {
 
     // Verify updated stats: 1 total, 0 pending, 1 completed
     await waitFor(() => {
-      expect(screen.queryByText('Pending Task')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('task-1')).not.toBeInTheDocument();
       expect(getByTextContent('Total: 1')).toBeInTheDocument();
       expect(getByTextContent('Pending: 0')).toBeInTheDocument();
       expect(getByTextContent('Completed: 1')).toBeInTheDocument();
