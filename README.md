@@ -49,6 +49,10 @@ docker-compose up --build
 - Backend API: http://localhost:8000
 - API Documentation: http://localhost:8000/swagger
 
+6. **Register with name, email, and password**
+- Navigate to registration page in the app to create a new user
+- You will be automatically redirected to the task management page
+
 ## Manual Setup (Without Docker)
 
 ### Backend
