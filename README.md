@@ -31,12 +31,20 @@ Objective: Build a small to-do task management API and frontend.
 cd ezra-take-home-test
 ```
 
-2. **Start the application**
+2. **Create local environment file**
+```bash
+cp .env.example .env
+```
+
+3. **Set a real JWT secret in `.env`**
+- Update `JWT__SecretKey` with a strong random value (32+ characters).
+
+4. **Start the application**
 ```bash
 docker-compose up --build
 ```
 
-3. **Access the application**
+5. **Access the application**
 - Frontend: http://localhost:3000
 - Backend API: http://localhost:8000
 - API Documentation: http://localhost:8000/swagger
@@ -67,7 +75,7 @@ export JWT__SecretKey="replace-with-a-strong-random-secret-at-least-32-character
 dotnet run
 ```
 
-Note: `docker-compose.yml` already defines `JWT__SecretKey` for local Docker runs.
+Note: for Docker Compose, JWT settings are loaded from root `.env` (created from `.env.example`).
 
 ### Frontend
 
@@ -85,15 +93,6 @@ npm install
 ```bash
 npm run dev
 ```
-
-## API Endpoints
-
-- **POST** `/api/v1/auth/register` - User registration
-- **POST** `/api/v1/auth/login` - User login
-- **GET** `/api/v1/tasks` - Get all tasks
-- **POST** `/api/v1/tasks` - Create a task
-- **PUT** `/api/v1/tasks/{id}` - Update a task
-- **DELETE** `/api/v1/tasks/{id}` - Delete a task
 
 ## Testing
 
