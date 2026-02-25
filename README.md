@@ -53,7 +53,12 @@ docker-compose up --build
 
 ### Backend
 
-1. **Install .NET SDK 8.0** ([Download](https://dotnet.microsoft.com/download))
+1. **Install .NET 8 SDK (LTS)**
+- Install the **8.x SDK specifically** (not latest 10.x): [Download .NET 8](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
+- Verify after install:
+```bash
+dotnet --list-sdks
+```
 
 2. **Navigate to backend directory**
 ```bash
@@ -67,7 +72,7 @@ dotnet restore
 
 4. **Set required environment variable**
 ```bash
-export JWT__SecretKey="replace-with-a-strong-random-secret-at-least-32-characters"
+export JWT__SecretKey="$(openssl rand -base64 64)"
 ```
 
 5. **Run the application**
@@ -93,6 +98,29 @@ npm install
 ```bash
 npm run dev
 ```
+
+## Troubleshooting
+
+### `POST /api/v1/auth/register` returns `500` during manual setup
+
+From `backend/TaskManagement.Api`:
+
+```bash
+# Ensure JWT secret is present for this shell session
+export JWT__SecretKey="$(openssl rand -base64 64)"
+
+# Optional: show detailed error responses locally
+export ASPNETCORE_ENVIRONMENT=Development
+
+# Reset local SQLite database state
+rm -f app.db
+
+# Restore and rerun
+dotnet restore
+dotnet run
+```
+
+If it still fails, check backend terminal logs at the time of the request and use the exception message/stack trace to pinpoint the exact cause.
 
 ## Testing
 
@@ -190,6 +218,7 @@ See **[MIGRATION.md](MIGRATION.md)** for details on the original FastAPI impleme
 - Expand observability with structured logs, request correlation IDs, and metrics.
 - Expand tests for additional edge cases (explicit clear semantics, pagination boundaries, case-insensitive email behavior).
 - Add CI pipeline checks for lint/test/build on pull requests.
+- Evaluate a framework upgrade path to `net10.0` in a dedicated pass once compatibility and dependency impacts are validated.
 
 ## License
 
