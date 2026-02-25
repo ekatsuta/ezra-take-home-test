@@ -54,7 +54,7 @@ docker-compose up --build
 ### Backend
 
 1. **Install .NET 8 SDK (LTS)**
-- Install the **8.x SDK specifically** (not latest 10.x): [Download .NET 8](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
+- Install the **8.x SDK**: [Download .NET 8](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
 - Verify after install:
 ```bash
 dotnet --list-sdks
@@ -98,29 +98,6 @@ npm install
 ```bash
 npm run dev
 ```
-
-## Troubleshooting
-
-### `POST /api/v1/auth/register` returns `500` during manual setup
-
-From `backend/TaskManagement.Api`:
-
-```bash
-# Ensure JWT secret is present for this shell session
-export JWT__SecretKey="$(openssl rand -base64 64)"
-
-# Optional: show detailed error responses locally
-export ASPNETCORE_ENVIRONMENT=Development
-
-# Reset local SQLite database state
-rm -f app.db
-
-# Restore and rerun
-dotnet restore
-dotnet run
-```
-
-If it still fails, check backend terminal logs at the time of the request and use the exception message/stack trace to pinpoint the exact cause.
 
 ## Testing
 
@@ -197,8 +174,7 @@ See **[MIGRATION.md](MIGRATION.md)** for details on the original FastAPI impleme
 
 - Single-tenant task management app where authenticated users only manage their own tasks.
 - Task workflow is intentionally simple and limited to `pending` and `completed`.
-- Soft delete (`deleted_at`) is sufficient for this project scope.
-- SQLite is acceptable for local development and take-home assessment scale.
+- Soft delete to preserve historical data.
 - JWT access-token auth is sufficient for current scope (no refresh-token flow yet).
 
 ## Scalability Considerations
@@ -212,13 +188,13 @@ See **[MIGRATION.md](MIGRATION.md)** for details on the original FastAPI impleme
 ## Future Improvements
 
 - Add refresh-token lifecycle (rotation/revocation) for stronger session management.
+- HTTP-only cookies instead of localStorage
 - Add rate limiting and brute-force protection on auth endpoints.
 - Move production persistence to PostgreSQL with managed migrations.
-- Add optimistic concurrency handling for conflicting task updates.
 - Expand observability with structured logs, request correlation IDs, and metrics.
-- Expand tests for additional edge cases (explicit clear semantics, pagination boundaries, case-insensitive email behavior).
 - Add CI pipeline checks for lint/test/build on pull requests.
 - Evaluate a framework upgrade path to `net10.0` in a dedicated pass once compatibility and dependency impacts are validated.
+- Password reset flow
 
 ## License
 
