@@ -1,4 +1,4 @@
-# Ezra Full Stack Developer Take-Home Test
+# Task Management App
 
 Objective: Build a small to-do task management API and frontend.
 
