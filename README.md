@@ -65,7 +65,7 @@ cd backend/TaskManagement.Api
 dotnet restore
 ```
 
-4. **Set JWT secret (required)**
+4. **Set required environment variable**
 ```bash
 export JWT__SecretKey="replace-with-a-strong-random-secret-at-least-32-characters"
 ```
@@ -75,7 +75,7 @@ export JWT__SecretKey="replace-with-a-strong-random-secret-at-least-32-character
 dotnet run
 ```
 
-Note: for Docker Compose, JWT settings are loaded from root `.env` (created from `.env.example`).
+Manual setup note: `backend/TaskManagement.Api/.env.example` documents optional backend env overrides, but local `dotnet run` uses your current shell environment variables.
 
 ### Frontend
 
@@ -164,6 +164,32 @@ dotnet publish -c Release -o ./publish
 This project was migrated from **FastAPI (Python)** to **.NET 8.0 (C#)** while maintaining API compatibility with the frontend.
 
 See **[MIGRATION.md](MIGRATION.md)** for details on the original FastAPI implementation and migration approach.
+
+## Assumptions
+
+- Single-tenant task management app where authenticated users only manage their own tasks.
+- Task workflow is intentionally simple and limited to `pending` and `completed`.
+- Soft delete (`deleted_at`) is sufficient for this project scope.
+- SQLite is acceptable for local development and take-home assessment scale.
+- JWT access-token auth is sufficient for current scope (no refresh-token flow yet).
+
+## Scalability Considerations
+
+- Layered architecture (controllers/services/data) keeps business logic decoupled from storage and transport details.
+- Current persistence layer can be migrated from SQLite to PostgreSQL/MySQL with limited service-layer impact.
+- Stateless JWT authentication supports horizontal API scaling behind a load balancer.
+- Task list pagination (`skip`/`limit`, max 100) prevents unbounded response sizes.
+- Dockerized setup helps reproducible local/CI environments.
+
+## Future Improvements
+
+- Add refresh-token lifecycle (rotation/revocation) for stronger session management.
+- Add rate limiting and brute-force protection on auth endpoints.
+- Move production persistence to PostgreSQL with managed migrations.
+- Add optimistic concurrency handling for conflicting task updates.
+- Expand observability with structured logs, request correlation IDs, and metrics.
+- Expand tests for additional edge cases (explicit clear semantics, pagination boundaries, case-insensitive email behavior).
+- Add CI pipeline checks for lint/test/build on pull requests.
 
 ## License
 

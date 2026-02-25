@@ -4,7 +4,6 @@ import ProtectedRoute from './components/ProtectedRoute';
 import LoginPage from './pages/LoginPage/LoginPage';
 import RegisterPage from './pages/RegisterPage/RegisterPage';
 import Dashboard from './pages/Dashboard/Dashboard';
-import './App.css';
 
 export default function App() {
   return (
